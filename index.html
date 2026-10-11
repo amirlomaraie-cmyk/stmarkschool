@@ -8,8 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Cairo & Tajawal) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -28,7 +28,6 @@
                     },
                     fontFamily: {
                         cairo: ['Cairo', 'sans-serif'],
-                        tajawal: ['Tajawal', 'sans-serif'],
                     }
                 }
             }
@@ -42,28 +41,9 @@
             background-size: 24px 24px;
         }
         .dropdown:hover .dropdown-menu { display: block; }
-        .reader-container { position: relative; }
-        
-        /* تنسيقات صفحة نتائج السنوات السابقة المدمجة */
-        .results-page-container { max-width: 850px; margin: 0 auto; width: 100%; font-family: 'Tajawal', sans-serif; text-align: right; }
-        .results-page-container .search-box { background: #ffffff; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center; margin-bottom: 30px; }
-        .results-page-container .search-box label { display: block; margin-bottom: 15px; font-weight: 700; font-size: 1.2rem; color: #1e293b; }
-        .results-page-container .input-group { display: flex; gap: 10px; justify-content: center; max-width: 500px; margin: 0 auto; }
-        .results-page-container input[type="text"] { flex: 1; padding: 14px 20px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.1rem; outline: none; font-family: 'Tajawal', sans-serif; }
-        .results-page-container input[type="text"]:focus { border-color: #4f46e5; }
-        .results-page-container button.search-btn { background-color: #4f46e5; color: white; border: none; padding: 0 25px; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Tajawal', sans-serif; }
-        .results-page-container button.search-btn:hover { background-color: #4338ca; }
-        .results-page-container .result-card { background: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); padding: 30px; display: none; text-align: right; }
-        .results-page-container .student-info { border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .results-page-container .info-item span { display: block; color: #64748b; font-size: 0.9rem; margin-bottom: 4px; }
-        .results-page-container .info-item strong { font-size: 1.1rem; color: #1e293b; }
-        .results-page-container .grades-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
-        .results-page-container .grades-table th, .results-page-container .grades-table td { padding: 12px 15px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-        .results-page-container .grades-table th { background-color: #f8fafc; color: #64748b; font-weight: 700; }
-        .results-page-container .fail-grade { color: #dc2626; font-weight: 900; }
-        .results-page-container .total-section { background: #f8fafc; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .results-page-container .badge { padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 1rem; background-color: #e0e7ff; color: #3730a3; }
-        .results-page-container .error-message { background-color: #fee2e2; color: #dc2626; padding: 15px; border-radius: 10px; text-align: center; font-weight: 700; display: none; margin-top: 20px; }
+        .reader-container {
+            position: relative;
+        }
     </style>
 </head>
 <body class="bg-coptic-cream text-slate-800 font-cairo antialiased min-h-screen flex flex-col justify-between" onload="loadDailyVerse()">
@@ -86,14 +66,14 @@
                     <i class="fa-solid fa-church text-coptic-gold"></i>
                     <span>كنيسة الشهيد العظيم مارمرقس الرسول ببني صامت</span>
                 </div>
-                <!-- Mobile Menu Button -->
+                <!-- Mobile Menu Button (زر القائمة الجانبية للموبايل) -->
                 <button onclick="toggleMobileMenu()" class="text-white text-2xl p-1.5 bg-coptic-deepSky/80 rounded-lg border border-sky-300/30 focus:outline-none">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Navigation Menu -->
+        <!-- Navigation Menu (القوائم الرئيسية ظاهرة الآن في الواجهة لجميع الشاشات) -->
         <nav class="max-w-7xl mx-auto px-4">
             <ul class="flex flex-wrap justify-center gap-2 md:gap-6 text-xs md:text-sm font-semibold py-2">
                 <li>
@@ -120,7 +100,7 @@
                     <ul class="dropdown-menu hidden absolute right-0 w-52 bg-coptic-deepSky border border-sky-300 rounded-lg shadow-2xl py-2 z-50 text-right">
                         <li><a href="#" onclick="openReader('تاريخ مدرسة التسبيح', 'https://drive.google.com/file/d/1eiF9bBQTQInOmdUsiNMORV6zV35bFioQ/preview')" class="block px-4 py-2 hover:bg-white hover:text-coptic-sky">تاريخ المدرسة</a></li>
                         <li><a href="#" onclick="openReader('لائحة مدرسة التسبيح', 'https://drive.google.com/file/d/1blnmI_c4dnSbAkXipj5otIjeQ19wY0Fh/preview')" class="block px-4 py-2 hover:bg-white hover:text-coptic-sky">لائحة المدرسة</a></li>
-                        <li><a href="#" onclick="showPage('results-hub')" class="block px-4 py-2 hover:bg-white hover:text-coptic-sky">نتائج السنوات والامتحانات</a></li>
+                        <li><a href="#" onclick="showPage('results')" class="block px-4 py-2 hover:bg-white hover:text-coptic-sky">نتائج الطلاب</a></li>
                     </ul>
                 </li>
 
@@ -148,7 +128,7 @@
         </nav>
     </header>
 
-    <!-- Mobile Sidebar Drawer -->
+    <!-- Mobile Sidebar Drawer (القائمة المنسدلة الجانبية الاحتياطية) -->
     <div id="mobile-sidebar" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity duration-300">
         <div class="fixed top-0 left-0 w-72 h-full bg-coptic-deepSky text-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto text-right">
             <div>
@@ -167,7 +147,7 @@
                     <p class="text-xs text-sky-300 font-bold px-3">مدرسة التسبيح</p>
                     <li><button onclick="openReader('تاريخ مدرسة التسبيح', 'https://drive.google.com/file/d/1eiF9bBQTQInOmdUsiNMORV6zV35bFioQ/preview'); toggleMobileMenu();" class="w-full text-right py-2 px-3 rounded-lg hover:bg-white/10">تاريخ المدرسة</button></li>
                     <li><button onclick="openReader('لائحة مدرسة التسبيح', 'https://drive.google.com/file/d/1blnmI_c4dnSbAkXipj5otIjeQ19wY0Fh/preview'); toggleMobileMenu();" class="w-full text-right py-2 px-3 rounded-lg hover:bg-white/10">لائحة المدرسة</button></li>
-                    <li><button onclick="showPage('results-hub'); toggleMobileMenu();" class="w-full text-right py-2 px-3 rounded-lg hover:bg-white/10">نتائج السنوات والامتحانات</button></li>
+                    <li><button onclick="showPage('results'); toggleMobileMenu();" class="w-full text-right py-2 px-3 rounded-lg hover:bg-white/10">نتائج الطلاب</button></li>
                     <hr class="border-sky-400/20">
                     <p class="text-xs text-sky-300 font-bold px-3">المكتبات</p>
                     <li><button onclick="showPage('home'); scrollToSubjects(); toggleMobileMenu();" class="w-full text-right py-2 px-3 rounded-lg hover:bg-white/10">مكتبة الكُتب (المناهج)</button></li>
@@ -188,74 +168,113 @@
         
         <!-- HOME PAGE -->
         <div id="page-home" class="page-content">
+            <!-- Hero Banner with Dynamic Daily Verse -->
             <section class="sky-pattern text-white py-16 px-4 text-center relative overflow-hidden border-b-4 border-coptic-gold flex flex-col items-center justify-center">
                 <div class="max-w-4xl mx-auto space-y-4">
-                    <h2 id="daily-verse" class="text-2xl md:text-4xl font-extrabold text-amber-200 leading-tight drop-shadow-md min-h-[90px] flex items-center justify-center"></h2>
+                    <h2 id="daily-verse" class="text-2xl md:text-4xl font-extrabold text-amber-200 leading-tight drop-shadow-md min-h-[90px] flex items-center justify-center">
+                        <!-- تتغير الآية تلقائياً يومياً هنا -->
+                    </h2>
                     <p class="text-sky-50 text-lg max-w-2xl mx-auto pt-2">
                         مرحباً بكم في المنصة التعليمية لـ مدرسة التسبيح - لتعليم الكتاب المقدس والطقس والألحان واللغة القبطية لكل المراحل.
                     </p>
                 </div>
             </section>
 
+            <!-- Main Subjects Section -->
             <section id="subjects-section" class="max-w-7xl mx-auto px-4 py-12 flex flex-col items-center justify-center">
                 <h3 class="text-2xl md:text-3xl font-extrabold text-center text-coptic-deepSky mb-2">المناهج والفصول الدراسية بـ مدرسة التسبيح</h3>
                 <p class="text-center text-slate-600 mb-10">اختر المادة الدراسية لعرض كافة المناهج والفصول الخاصة بها للقراءة أونلاين</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
+                    
+                    <!-- 1. الكتاب المقدس -->
                     <div class="bg-white rounded-2xl shadow-lg border-t-4 border-coptic-sky overflow-hidden flex flex-col justify-between hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                         <div class="p-8 text-center flex-grow flex flex-col justify-center items-center">
-                            <div class="w-20 h-20 bg-coptic-sky text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md"><i class="fa-solid fa-book-bible"></i></div>
+                            <div class="w-20 h-20 bg-coptic-sky text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md">
+                                <i class="fa-solid fa-book-bible"></i>
+                            </div>
                             <h4 class="font-bold text-2xl text-coptic-deepSky mb-2">الكتاب المقدس</h4>
                             <p class="text-slate-500 text-sm leading-relaxed">شرح دراسي لأسفار وشخصيات الكتاب المقدس لكافة المراحل</p>
                         </div>
                         <div class="p-4 bg-slate-50 border-t border-slate-100">
-                            <button onclick="openSubjectPage('bible')" class="w-full bg-coptic-sky text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-deepSky transition flex items-center justify-center gap-2"><span>عرض الفصول والمناهج</span><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                            <button onclick="openSubjectPage('bible')" class="w-full bg-coptic-sky text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-deepSky transition flex items-center justify-center gap-2">
+                                <span>عرض الفصول والمناهج</span>
+                                <i class="fa-solid fa-arrow-left text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
+                    <!-- 2. الطقس الكنسي -->
                     <div class="bg-white rounded-2xl shadow-lg border-t-4 border-coptic-burgundy overflow-hidden flex flex-col justify-between hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                         <div class="p-8 text-center flex-grow flex flex-col justify-center items-center">
-                            <div class="w-20 h-20 bg-coptic-burgundy text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md"><i class="fa-solid fa-place-of-worship"></i></div>
+                            <div class="w-20 h-20 bg-coptic-burgundy text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md">
+                                <i class="fa-solid fa-place-of-worship"></i>
+                            </div>
                             <h4 class="font-bold text-2xl text-coptic-burgundy mb-2">الطقس الكنسي</h4>
                             <p class="text-slate-500 text-sm leading-relaxed">دراسة القداس الإلهي والطقوس والمناسبات الكنسية</p>
                         </div>
                         <div class="p-4 bg-slate-50 border-t border-slate-100">
-                            <button onclick="openSubjectPage('rituals')" class="w-full bg-coptic-burgundy text-white font-bold py-3 px-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2"><span>عرض الفصول والمناهج</span><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                            <button onclick="openSubjectPage('rituals')" class="w-full bg-coptic-burgundy text-white font-bold py-3 px-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <span>عرض الفصول والمناهج</span>
+                                <i class="fa-solid fa-arrow-left text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
+                    <!-- 3. الألحان والتسبحة -->
                     <div class="bg-white rounded-2xl shadow-lg border-t-4 border-coptic-gold overflow-hidden flex flex-col justify-between hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                         <div class="p-8 text-center flex-grow flex flex-col justify-center items-center">
-                            <div class="w-20 h-20 bg-coptic-gold text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md"><i class="fa-solid fa-music"></i></div>
+                            <div class="w-20 h-20 bg-coptic-gold text-white rounded-2xl flex items-center justify-center mb-4 text-4xl shadow-md">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
                             <h4 class="font-bold text-2xl text-coptic-darkGold mb-2">الألحان والتسبحة</h4>
                             <p class="text-slate-500 text-sm leading-relaxed">حفظ ألحان الهزات والتسبحة الكنسية السنوية والموسمية</p>
                         </div>
                         <div class="p-4 bg-slate-50 border-t border-slate-100">
-                            <button onclick="openSubjectPage('hymns')" class="w-full bg-coptic-gold text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-darkGold transition flex items-center justify-center gap-2"><span>عرض الفصول والمناهج</span><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                            <button onclick="openSubjectPage('hymns')" class="w-full bg-coptic-gold text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-darkGold transition flex items-center justify-center gap-2">
+                                <span>عرض الفصول والمناهج</span>
+                                <i class="fa-solid fa-arrow-left text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
+                    <!-- 4. اللغة القبطية -->
                     <div class="bg-white rounded-2xl shadow-lg border-t-4 border-coptic-deepSky overflow-hidden flex flex-col justify-between hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
                         <div class="p-8 text-center flex-grow flex flex-col justify-center items-center">
-                            <div class="w-20 h-20 bg-coptic-deepSky text-white rounded-2xl flex items-center justify-center mb-4 font-black text-5xl shadow-md">Ⲁ</div>
+                            <div class="w-20 h-20 bg-coptic-deepSky text-white rounded-2xl flex items-center justify-center mb-4 font-black text-5xl shadow-md">
+                                Ⲁ
+                            </div>
                             <h4 class="font-bold text-2xl text-coptic-deepSky mb-2">اللغة القبطية</h4>
                             <p class="text-slate-500 text-sm leading-relaxed">تعلم حروف وقواعد ونصوص اللغة القبطية الأرثوذكسية</p>
                         </div>
                         <div class="p-4 bg-slate-50 border-t border-slate-100">
-                            <button onclick="openSubjectPage('coptic')" class="w-full bg-coptic-deepSky text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-sky transition flex items-center justify-center gap-2"><span>عرض الفصول والمناهج</span><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                            <button onclick="openSubjectPage('coptic')" class="w-full bg-coptic-deepSky text-white font-bold py-3 px-4 rounded-xl hover:bg-coptic-sky transition flex items-center justify-center gap-2">
+                                <span>عرض الفصول والمناهج</span>
+                                <i class="fa-solid fa-arrow-left text-xs"></i>
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </section>
         </div>
 
         <!-- SUBJECT DETAILS PAGE -->
         <div id="page-subject-details" class="page-content hidden max-w-5xl mx-auto px-4 py-10 text-right">
-            <button onclick="showPage('home')" class="mb-6 text-coptic-sky font-bold hover:underline flex items-center gap-2"><i class="fa-solid fa-arrow-right"></i><span>العودة للمواضيع الرئيسية</span></button>
-            <div id="subject-header" class="p-8 rounded-2xl shadow-lg text-white mb-8 flex items-center gap-6"></div>
+            <button onclick="showPage('home')" class="mb-6 text-coptic-sky font-bold hover:underline flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>العودة للمواضيع الرئيسية</span>
+            </button>
+
+            <div id="subject-header" class="p-8 rounded-2xl shadow-lg text-white mb-8 flex items-center gap-6">
+                <!-- Dynamic Header Output -->
+            </div>
+
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-100">
                 <h4 class="text-xl font-bold text-slate-800 mb-6 pb-2 border-b border-slate-100">قائمة الفصول والمناهج الدراسية</h4>
-                <div id="subject-classes-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="subject-classes-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic Classes List -->
+                </div>
             </div>
         </div>
 
@@ -266,34 +285,46 @@
                     <h3 class="text-3xl font-bold text-coptic-deepSky mb-2">القُمُّص إبراهيم البسيط</h3>
                     <p class="text-slate-600">سيرة عطرة، معجزات، وتعاليم مباركة (وضع القراءة الآمن)</p>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-sky text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow"><i class="fa-solid fa-book-open"></i></div>
+                            <div class="w-12 h-12 bg-coptic-sky text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
                             <h4 class="font-bold text-xl text-slate-800 mb-2">سيرته وتعاليمه ومعجزاته</h4>
                             <p class="text-slate-500 text-sm mb-6">تصفح سيرة أبونا القمص إبراهيم البسيط المباركة وتعاليمه ومعجزاته المؤثرة.</p>
                         </div>
                         <button onclick="openReader('سيرته وتعاليمه ومعجزاته - القمص إبراهيم البسيط', 'https://drive.google.com/file/d/1dq9ybFY5U_022oj1QTkrbeBcz-iSP80S/preview')" class="w-full bg-coptic-sky text-white font-bold py-3 rounded-xl hover:bg-coptic-deepSky transition text-sm">قراءة الملف أونلاين</button>
                     </div>
+
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition border-t-4 border-coptic-gold flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-gold text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow"><i class="fa-solid fa-music"></i></div>
+                            <div class="w-12 h-12 bg-coptic-gold text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
                             <h4 class="font-bold text-xl text-slate-800 mb-2">التمجيد</h4>
                             <p class="text-slate-500 text-sm mb-6">قراءة تمجيد القمص إبراهيم البسيط وألحان تكريماً لذكراه العطرة.</p>
                         </div>
                         <button onclick="openReader('تمجيد القمص إبراهيم البسيط', 'https://drive.google.com/file/d/1RBWX3QyB16Ke-Jfdf_yLvePc5xZ214ou/preview')" class="w-full bg-coptic-gold text-white font-bold py-3 rounded-xl hover:bg-coptic-darkGold transition text-sm">قراءة الملف أونلاين</button>
                     </div>
+
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition border-t-4 border-coptic-burgundy flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-burgundy text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow"><i class="fa-solid fa-scroll"></i></div>
+                            <div class="w-12 h-12 bg-coptic-burgundy text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow">
+                                <i class="fa-solid fa-scroll"></i>
+                            </div>
                             <h4 class="font-bold text-xl text-slate-800 mb-2">الذكصولوجية</h4>
                             <p class="text-slate-500 text-sm mb-6">تصفح ذكصولوجية القمص إبراهيم البسيط وقراءتها بوضع العرض الآمن.</p>
                         </div>
                         <button onclick="openReader('ذكصولوجية القمص إبراهيم البسيط', 'https://drive.google.com/file/d/1yufjnp73bhq1qfp8gsjlBcZoL2JPGtgz/preview')" class="w-full bg-coptic-burgundy text-white font-bold py-3 rounded-xl hover:opacity-90 transition text-sm">قراءة الملف أونلاين</button>
                     </div>
+
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition border-t-4 border-coptic-deepSky flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-deepSky text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow"><i class="fa-solid fa-landmark"></i></div>
+                            <div class="w-12 h-12 bg-coptic-deepSky text-white rounded-xl flex items-center justify-center mb-4 text-xl shadow">
+                                <i class="fa-solid fa-landmark"></i>
+                            </div>
                             <h4 class="font-bold text-xl text-slate-800 mb-2">السنكسار</h4>
                             <p class="text-slate-500 text-sm mb-6">السنكسار الخاص بسيرة ونياحة القمص إبراهيم البسيط.</p>
                         </div>
@@ -307,54 +338,78 @@
         <div id="page-contact" class="page-content hidden max-w-4xl mx-auto px-4 py-12 text-right">
             <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-200 space-y-8">
                 <div class="text-center">
-                    <div class="w-16 h-16 bg-coptic-sky text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-md"><i class="fa-solid fa-headset"></i></div>
+                    <div class="w-16 h-16 bg-coptic-sky text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-md">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
                     <h3 class="text-3xl font-bold text-coptic-deepSky mb-2">اتصل بنا وفريق العمل</h3>
                     <p class="text-slate-600">يسعدنا تواصلكم واستفساراتكم دائماً بكنيسة الشهيد العظيم مارمرقس الرسول ببني صامت</p>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-sky text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow"><i class="fa-solid fa-user-tie"></i></div>
+                            <div class="w-12 h-12 bg-coptic-sky text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
                             <h4 class="font-bold text-lg text-slate-800 mb-1">القس كاراس سمير</h4>
                             <span class="inline-block bg-sky-100 text-coptic-sky text-xs font-semibold px-2.5 py-1 rounded-full mb-4">مُشرف المدرسة</span>
                         </div>
                         <div class="pt-4 border-t border-slate-200">
                             <p class="text-xs text-slate-500 mb-1">رقم الهاتف:</p>
-                            <a href="tel:01120439415" dir="ltr" class="font-bold text-coptic-deepSky text-sm hover:underline flex items-center justify-center gap-1"><i class="fa-solid fa-phone text-xs"></i> 01120439415</a>
+                            <a href="tel:01120439415" dir="ltr" class="font-bold text-coptic-deepSky text-sm hover:underline flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-phone text-xs"></i> 01120439415
+                            </a>
                         </div>
                     </div>
+
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-gold flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-gold text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow"><i class="fa-solid fa-user-gear"></i></div>
+                            <div class="w-12 h-12 bg-coptic-gold text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow">
+                                <i class="fa-solid fa-user-gear"></i>
+                            </div>
                             <h4 class="font-bold text-lg text-slate-800 mb-1">الأستاذ مرقس توفيق</h4>
                             <span class="inline-block bg-amber-100 text-coptic-darkGold text-xs font-semibold px-2.5 py-1 rounded-full mb-4">مُدير المدرسة</span>
                         </div>
                         <div class="pt-4 border-t border-slate-200">
                             <p class="text-xs text-slate-500 mb-1">رقم الهاتف:</p>
-                            <a href="tel:01145617227" dir="ltr" class="font-bold text-coptic-darkGold text-sm hover:underline flex items-center justify-center gap-1"><i class="fa-solid fa-phone text-xs"></i> 01145617227</a>
+                            <a href="tel:01145617227" dir="ltr" class="font-bold text-coptic-darkGold text-sm hover:underline flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-phone text-xs"></i> 01145617227
+                            </a>
                         </div>
                     </div>
+
                     <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-burgundy flex flex-col justify-between">
                         <div>
-                            <div class="w-12 h-12 bg-coptic-burgundy text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow"><i class="fa-solid fa-user-shield"></i></div>
+                            <div class="w-12 h-12 bg-coptic-burgundy text-white rounded-xl flex items-center justify-center mx-auto mb-3 text-xl shadow">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
                             <h4 class="font-bold text-lg text-slate-800 mb-1">الأستاذ عازر عيد</h4>
                             <span class="inline-block bg-rose-100 text-coptic-burgundy text-xs font-semibold px-2.5 py-1 rounded-full mb-4">أمين عام الخدمة</span>
                         </div>
                         <div class="pt-4 border-t border-slate-200">
                             <p class="text-xs text-slate-500 mb-1">رقم الهاتف:</p>
-                            <a href="tel:01129526795" dir="ltr" class="font-bold text-coptic-burgundy text-sm hover:underline flex items-center justify-center gap-1"><i class="fa-solid fa-phone text-xs"></i> 01129526795</a>
+                            <a href="tel:01129526795" dir="ltr" class="font-bold text-coptic-burgundy text-sm hover:underline flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-phone text-xs"></i> 01129526795
+                            </a>
                         </div>
                     </div>
                 </div>
+
+                <!-- WhatsApp Group Banner -->
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-8 rounded-2xl text-center shadow-lg relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="flex items-center gap-4 text-right">
-                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner flex-shrink-0"><i class="fa-brands fa-whatsapp"></i></div>
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl shadow-inner flex-shrink-0">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
                         <div>
                             <h4 class="text-2xl font-bold mb-1">جروب واتساب مدرسة التسبيح</h4>
                             <p class="text-emerald-100 text-sm">انضم الآن إلى مجموعة الواتساب الرسمية لمتابعة الإشعارات والأخبار أولاً بأول.</p>
                         </div>
                     </div>
-                    <a href="https://chat.whatsapp.com/F8zIxrOdS5qBPNGSLzBG3l" target="_blank" class="bg-white text-emerald-700 font-extrabold px-8 py-3.5 rounded-xl hover:bg-emerald-50 transition shadow-md flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-right-to-bracket"></i><span>انضم للجروب الآن</span></a>
+                    <a href="https://chat.whatsapp.com/F8zIxrOdS5qBPNGSLzBG3l" target="_blank" class="bg-white text-emerald-700 font-extrabold px-8 py-3.5 rounded-xl hover:bg-emerald-50 transition shadow-md flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>انضم للجروب الآن</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -363,17 +418,27 @@
         <div id="page-publications" class="page-content hidden max-w-7xl mx-auto px-4 py-10">
             <div class="bg-gradient-to-r from-coptic-deepSky to-coptic-sky text-white rounded-3xl p-8 md:p-12 mb-12 shadow-xl text-center relative overflow-hidden border-b-4 border-coptic-gold">
                 <div class="relative z-10 max-w-3xl mx-auto">
-                    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner border border-white/30 text-coptic-gold"><i class="fa-solid fa-book-bookmark"></i></div>
+                    <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner border border-white/30 text-coptic-gold">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
                     <h3 class="text-3xl md:text-4xl font-extrabold mb-3">مكتبة الإصدارات والكتب الطقسية</h3>
-                    <p class="text-sky-100 text-base md:text-lg leading-relaxed">تصفح وقراءة الكتب والألحان والإصدارات الليتورجية والطقسية الصادرة عن مدرسة التسبيح ببني صامت أونلاين مباشرة.</p>
+                    <p class="text-sky-100 text-base md:text-lg leading-relaxed">
+                        تصفح وقراءة الكتب والألحان والإصدارات الليتورجية والطقسية الصادرة عن مدرسة التسبيح ببني صامت أونلاين مباشرة.
+                    </p>
                 </div>
             </div>
-            <div id="books-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+            <div id="books-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Javascript will populate book cards here -->
+            </div>
         </div>
 
         <!-- ONLINE VIEWER PAGE -->
         <div id="page-reader" class="page-content hidden max-w-5xl mx-auto px-4 py-10 text-right">
-            <button onclick="goBackToPrevious()" class="mb-6 text-coptic-sky font-bold hover:underline flex items-center gap-2"><i class="fa-solid fa-arrow-right"></i><span>العودة للقائمة</span></button>
+            <button onclick="goBackToPrevious()" class="mb-6 text-coptic-sky font-bold hover:underline flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>العودة للقائمة</span>
+            </button>
             <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden p-4">
                 <div class="flex justify-between items-center mb-4 px-2 pb-3 border-b border-slate-100">
                     <h4 id="reader-title" class="font-bold text-lg text-coptic-deepSky">عرض الكتاب للقراءة</h4>
@@ -385,105 +450,52 @@
             </div>
         </div>
 
-        <!-- RESULTS HUB PAGE (نافذة نتائج السنوات والامتحانات الكبرى) -->
-        <div id="page-results-hub" class="page-content hidden max-w-5xl mx-auto px-4 py-12 text-right">
-            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-200 space-y-12">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-coptic-sky text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-md"><i class="fa-solid fa-graduation-cap"></i></div>
-                    <h3 class="text-3xl font-bold text-coptic-deepSky mb-2">بوابة نتائج الامتحانات والسنوات الدراسية</h3>
-                    <p class="text-slate-600">اختر نوع النتيجة التي ترغب في الاطلاع عليها (نتائج 2025-2026 أو أرشيف السنوات السابقة)</p>
+        <!-- RESULTS PAGE -->
+        <div id="page-results" class="page-content hidden max-w-5xl mx-auto px-4 py-12">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-coptic-deepSky mb-2">نتائج فصول مدرسة التسبيح</h3>
+                    <p class="text-slate-600">اختر صفك الدراسي للاطلاع على كشف نتائج جميع الطلاب (وضع القراءة الآمن)</p>
                 </div>
 
-                <!-- القسم الأول: نتيجة العام الدراسي 2025-2026 (فصول لكل المراداد من الأول الابتدائي للثالث الإعدادي) -->
-                <div class="bg-slate-50 border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
-                    <div class="flex items-center gap-3 mb-6 pb-3 border-b border-slate-200">
-                        <div class="w-10 h-10 bg-coptic-sky text-white rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-award"></i></div>
-                        <div>
-                            <h4 class="text-xl font-bold text-coptic-deepSky">نتيجة العام الدراسي 2025-2026م</h4>
-                            <p class="text-slate-500 text-xs">اختر الفصل الدراسي لعرض النتيجة أونلاين لكل فصل على حدة في وضع القراءة الآمن</p>
-                        </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الأول الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف الأول الابتدائي', 'https://drive.google.com/file/d/1He6rfjqrvccR1ddP99MiX0hAuEpXC_z9/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- صفوف الابتدائي -->
-                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-                            <h5 class="font-bold text-coptic-sky text-sm border-b pb-2">المرحلة الابتدائية</h5>
-                            <button onclick="openReader('نتيجة الصف الأول الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1He6rfjqrvccR1ddP99MiX0hAuEpXC_z9/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الأول الابتدائي</button>
-                            <button onclick="openReader('نتيجة الصف الثاني الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1-fa6AM9wAzhCgKFJqAK5eML4wZ3ec5y3/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الثاني الابتدائي</button>
-                            <button onclick="openReader('نتيجة الصف الثالث الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1GNCDMaE_njlbbqt6nZ4-VZdRQmIHsczq/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الثالث الابتدائي</button>
-                            <button onclick="openReader('نتيجة الصف الرابع الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1ABqPoAUklROeWy9TzZuvheqNklJJVdv6/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الرابع الابتدائي</button>
-                            <button onclick="openReader('نتيجة الصف الخامس الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1-iH9UQ64tl0dFVArJJbHIPEkct7sx2aH/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الخامس الابتدائي</button>
-                            <button onclick="openReader('نتيجة الصف السادس الابتدائي - 2025/2026', 'https://drive.google.com/file/d/1pN3foT3eCMGCeo9G1bOUGkc3SI8JghcT/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-sky-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف السادس الابتدائي</button>
-                        </div>
-
-                        <!-- صفوف الإعدادي -->
-                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-                            <h5 class="font-bold text-coptic-burgundy text-sm border-b pb-2">المرحلة الإعدادية</h5>
-                            <button onclick="openReader('نتيجة الصف الأول الإعدادي - 2025/2026', 'https://drive.google.com/file/d/1_oGhsdhdCAd5Xa73YKH-Lv0EknGNHRxS/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-rose-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الأول الإعدادي</button>
-                            <button onclick="openReader('نتيجة الصف الثاني الإعدادي - 2025/2026', 'https://drive.google.com/file/d/1_YQvO3-ZISL8hW4wwr_HKvC_pyh34P1u/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-rose-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الثاني الإعدادي</button>
-                            <button onclick="openReader('نتيجة الصف الثالث الإعدادي - 2025/2026', 'https://drive.google.com/file/d/1MRv71JvDmY1gQVNc2RzpACY0znHTNbVC/preview')" class="w-full text-right text-xs bg-slate-50 hover:bg-rose-50 text-slate-700 font-bold p-3 rounded-lg transition border">الصف الثالث الإعدادي</button>
-                        </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الثاني الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف الثاني الابتدائي', 'https://drive.google.com/file/d/1-fa6AM9wAzhCgKFJqAK5eML4wZ3ec5y3/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
                     </div>
-                </div>
-
-                <!-- القسم الثاني: نتائج السنوات السابقة (محرك البحث الشامل) -->
-                <div class="results-page-container bg-slate-50 border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
-                    <header class="text-center mb-6">
-                        <h3 class="text-2xl font-extrabold text-coptic-deepSky mb-1">نتائج السنوات السابقة</h3>
-                        <p class="text-slate-600 text-xs">البحث الفردي عن درجات الطلاب (متوفر للعام الدراسي 2021-2022)</p>
-                    </header>
-
-                    <div class="year-selector text-center mb-6">
-                        <select id="academicYear" class="p-2.5 border-2 border-slate-200 rounded-xl text-base outline-none bg-white font-bold cursor-pointer">
-                            <option value="2021-2022">نتيجة العام الدراسي 2021- 2022م</option>
-                            <option value="2022-2023">نتيجة العام الدراسي 2022- 2023م</option>
-                            <option value="2023-2024">نتيجة العام الدراسي 2023- 2024م</option>
-                            <option value="2024-2025">نتيجة العام الدراسي 2024- 2025م</option>
-                            <option value="2025-2026">نتيجة العام الدراسي 2025- 2026م</option>
-                        </select>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الثالث الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف الثالث الابتدائي', 'https://drive.google.com/file/d/1GNCDMaE_njlbbqt6nZ4-VZdRQmIHsczq/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
                     </div>
-
-                    <div class="search-box">
-                        <label for="studentCode">رقم كود الطالب أو الاسم</label>
-                        <div class="input-group">
-                            <input type="text" id="studentCode" placeholder="مثال: 2101 أو مارينا" autocomplete="off">
-                            <button type="button" class="search-btn" onclick="searchResultHistory()">بحث عن النتيجة</button>
-                        </div>
-                        <div id="errorMsg" class="error-message">عذراً، لم يتم العثور على طالب بهذا الكود أو الاسم. تأكد من البيانات وحاول مرة أخرى.</div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الرابع الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف الرابع الابتدائي', 'https://drive.google.com/file/d/1ABqPoAUklROeWy9TzZuvheqNklJJVdv6/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
                     </div>
-
-                    <div id="resultCard" class="result-card">
-                        <div class="student-info">
-                            <div class="info-item"><span>اسم الطالب:</span><strong id="resName">-</strong></div>
-                            <div class="info-item"><span>الصف الدراسي:</span><strong id="resClass">-</strong></div>
-                            <div class="info-item"><span>المستوى:</span><strong id="resLevel">-</strong></div>
-                        </div>
-
-                        <table class="grades-table">
-                            <thead>
-                                <tr>
-                                    <th>المادة / العنصر</th>
-                                    <th>الدرجة النهائية العظمى</th>
-                                    <th>الدرجة الحاصل عليها</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>المحفوظات</td><td>20</td><td id="gradeMemorization">-</td></tr>
-                                <tr><td>الطقس الكنسي</td><td>80</td><td id="gradeRituals">-</td></tr>
-                                <tr><td>الألحان والتسبحة</td><td>80</td><td id="gradeHymns">-</td></tr>
-                                <tr><td>اللغة القبطية</td><td>80</td><td id="gradeCoptic">-</td></tr>
-                                <tr><td>الحضور والسلوك</td><td>40</td><td id="gradeBehavior">-</td></tr>
-                            </tbody>
-                        </table>
-
-                        <div class="total-section">
-                            <div><span style="color: #64748b; font-size: 0.9rem;">المجموع الكلي (من 300):</span><strong id="resTotal" style="font-size: 1.3rem; margin-right: 10px;">-</strong></div>
-                            <div><span style="color: #64748b; font-size: 0.9rem; margin-left: 10px;">النسبة المئوية:</span><strong id="resPercentage" style="font-size: 1.3rem;">-</strong></div>
-                            <div><span style="color: #64748b; font-size: 0.9rem; margin-left: 10px;">التقدير:</span><span id="resEvaluation" class="badge">-</span></div>
-                        </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الخامس الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف الخامس الابتدائي', 'https://drive.google.com/file/d/1-iH9UQ64tl0dFVArJJbHIPEkct7sx2aH/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-sky">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف السادس الابتدائي</h4>
+                        <button onclick="openReader('نتيجة الصف السادس الابتدائي', 'https://drive.google.com/file/d/1pN3foT3eCMGCeo9G1bOUGkc3SI8JghcT/preview')" class="bg-coptic-sky text-white font-bold px-5 py-2.5 rounded-lg hover:bg-coptic-deepSky transition text-sm">عرض النتيجة أونلاين</button>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-burgundy">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الأول الإعدادي</h4>
+                        <button onclick="openReader('نتيجة الصف الأول الإعدادي', 'https://drive.google.com/file/d/1_oGhsdhdCAd5Xa73YKH-Lv0EknGNHRxS/preview')" class="bg-coptic-burgundy text-white font-bold px-5 py-2.5 rounded-lg hover:opacity-90 transition text-sm">عرض النتيجة أونلاين</button>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-burgundy">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الثاني الإعدادي</h4>
+                        <button onclick="openReader('نتيجة الصف الثاني الإعدادي', 'https://drive.google.com/file/d/1_YQvO3-ZISL8hW4wwr_HKvC_pyh34P1u/preview')" class="bg-coptic-burgundy text-white font-bold px-5 py-2.5 rounded-lg hover:opacity-90 transition text-sm">عرض النتيجة أونلاين</button>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl text-center shadow-sm hover:shadow-md transition border-t-4 border-coptic-burgundy">
+                        <h4 class="font-bold text-lg text-slate-800 mb-3">الصف الثالث الإعدادي</h4>
+                        <button onclick="openReader('نتيجة الصف الثالث الإعدادي', 'https://drive.google.com/file/d/1MRv71JvDmY1gQVNc2RzpACY0znHTNbVC/preview')" class="bg-coptic-burgundy text-white font-bold px-5 py-2.5 rounded-lg hover:opacity-90 transition text-sm">عرض النتيجة أونلاين</button>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -517,8 +529,10 @@
             const start = new Date(now.getFullYear(), 0, 0);
             const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
             const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
             const verseIndex = dayOfYear % dailyVerses.length;
             const selectedVerse = dailyVerses[verseIndex];
+
             const verseElement = document.getElementById('daily-verse');
             if (verseElement) {
                 verseElement.innerHTML = `<span>${selectedVerse.text}</span><br><span class="text-sm font-normal text-sky-200 mt-1 block">${selectedVerse.ref}</span>`;
@@ -527,7 +541,9 @@
 
         function toggleMobileMenu() {
             const sidebar = document.getElementById('mobile-sidebar');
-            if (sidebar) sidebar.classList.toggle('hidden');
+            if (sidebar) {
+                sidebar.classList.toggle('hidden');
+            }
         }
 
         let activePage = 'home';
@@ -540,17 +556,24 @@
                 activePage = pageId;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            if (pageId === 'publications') renderBooks();
+            if (pageId === 'publications') {
+                renderBooks();
+            }
         }
 
         function scrollToSubjects() {
             const section = document.getElementById('subjects-section');
-            if (section) section.scrollIntoView({ behavior: 'smooth' });
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         const subjectsData = {
             'bible': {
-                title: 'الكتاب المقدس', desc: 'شرح دراسي لأسفار وشخصيات الكتاب المقدس لكافة المراحل الدراسية', icon: 'fa-book-bible', bgColor: 'bg-coptic-sky',
+                title: 'الكتاب المقدس',
+                desc: 'شرح دراسي لأسفار وشخصيات الكتاب المقدس لكافة المراحل الدراسية',
+                icon: 'fa-book-bible',
+                bgColor: 'bg-coptic-sky',
                 classes: [
                     { name: 'الصَّف الأول الإبتدائي', link: 'https://drive.google.com/file/d/1xOAkGiuSe5A78cZCJS9YgmgIPQZwaQtW/preview' },
                     { name: 'الصَّف الثاني الإبتدائي', link: 'https://drive.google.com/file/d/1yp1yKydoZMsRO3IB6UV-4fKrgsCez4O5/preview' },
@@ -564,7 +587,10 @@
                 ]
             },
             'rituals': {
-                title: 'الطقس الكنسي', desc: 'دراسة القداس الإلهي والطقوس والمناسبات والأعياد الكنسية', icon: 'fa-place-of-worship', bgColor: 'bg-coptic-burgundy',
+                title: 'الطقس الكنسي',
+                desc: 'دراسة القداس الإلهي والطقوس والمناسبات والأعياد الكنسية',
+                icon: 'fa-place-of-worship',
+                bgColor: 'bg-coptic-burgundy',
                 classes: [
                     { name: 'الصَّف الأول الإبتدائي', link: 'https://drive.google.com/file/d/17fZdVrpdz2Dc257SbGIroYgXKWtebj44/preview' },
                     { name: 'الصَّف الثاني الإبتدائي', link: 'https://drive.google.com/file/d/1JM_Czimwov9NDBpvzIM0SLXx-7XqlWhv/preview' },
@@ -578,7 +604,10 @@
                 ]
             },
             'hymns': {
-                title: 'الألحان والتسبحة', desc: 'حفظ ألحان الهزات والتسبحة الكنسية والمناسبات الأرثوذكسية', icon: 'fa-music', bgColor: 'bg-coptic-gold',
+                title: 'الألحان والتسبحة',
+                desc: 'حفظ ألحان الهزات والتسبحة الكنسية والمناسبات الأرثوذكسية',
+                icon: 'fa-music',
+                bgColor: 'bg-coptic-gold',
                 classes: [
                     { name: 'الصَّف الأول الإبتدائي', link: 'https://drive.google.com/file/d/1PRPlQCPVafEdiodlrVGw9jPhWcPObITt/preview' },
                     { name: 'الصَّف الثاني الإبتدائي', link: 'https://drive.google.com/file/d/1sjFInt9SU58gInyJZwK_lxPN_MlWtcNc/preview' },
@@ -592,7 +621,10 @@
                 ]
             },
             'coptic': {
-                title: 'اللغة القبطية', desc: 'تعلم حروف وقواعد ونصوص اللغة القبطية الأرثوذكسية الاصيلة', customLogo: 'Ⲁ', bgColor: 'bg-coptic-deepSky',
+                title: 'اللغة القبطية',
+                desc: 'تعلم حروف وقواعد ونصوص اللغة القبطية الأرثوذكسية الاصيلة',
+                customLogo: 'Ⲁ',
+                bgColor: 'bg-coptic-deepSky',
                 classes: [
                     { name: 'الصَّف الأول الإبتدائي', link: 'https://drive.google.com/file/d/1OCX1VRRl2iWIj0EplYPPdFYMRuzIbH5s/preview' },
                     { name: 'الصَّف الثاني الإبتدائي', link: 'https://drive.google.com/file/d/1tbpfENCRfv4owhbOuJ75eeWpnX6NWYu-/preview' },
@@ -632,45 +664,71 @@
             { id: 22, name: "طَقس جُمعة خِتام الصَّوم وَسَبت لِعازَر", icon: "fa-heart-pulse", bgGradient: "from-purple-900 to-slate-900", copticLink: "", copticArLink: "https://drive.google.com/file/d/1m59MAGDtik7db6htAD2LWdYyUB6U1hWJ/preview" },
             { id: 23, name: "الإبصَلموديَّة المُقَدَّسَة السَنَويَّة (1) تَسبِحَة يَومَيّ السَّبت وَالأحَد", icon: "fa-book", bgGradient: "from-blue-800 to-indigo-950", copticLink: "https://drive.google.com/file/d/1eMgo49V3Q69wBfFdyHdWQjixQH1AdPL7/preview", copticArLink: "https://drive.google.com/file/d/1aDASHE-1exXatfciTlfQ3kUJV9C_N-Hb/preview" },
             { id: 24, name: "البَصخَة المُقَدَّسَة، سَبتُ الفَرَحِ", icon: "fa-cloud-sun", bgGradient: "from-slate-700 to-slate-950", copticLink: "https://drive.google.com/file/d/15LXgnYBefAqrXy4R3dJd4X0TCecazRCk/preview", copticArLink: "https://drive.google.com/file/d/1pBjCrIksDyY06nyOzUpAPERSkPB2Htcg/preview" },
-            { id: 25, name: "البصخة المقدسة، خميس العهد", icon: "fa-bread-slice", bgGradient: "from-amber-900 to-stone-950", copticLink: "https://drive.google.com/file/d/1R4UJ0rZx6YlpcaeqktOTXLjn1vOej3YJ/preview", copticArLink: "https://drive.google.com/file/d/1KuPsNDXEUAGKT__93PdB0CGBzzGMZ9JI/preview" }
+            { id: 25, name: "البصخة المقدسة، خميس العهد", icon: "fa-bread-slice", bgGradient: "from-amber-900 to-stone-950", copticLink: "https://drive.google.com/file/d/1R4UJ0rZx6YlpcaeqktOTXLjn1vOej3YJ/view?usp=drive_link", copticArLink: "https://drive.google.com/file/d/1KuPsNDXEUAGKT__93PdB0CGBzzGMZ9JI/view?usp=drive_link" }
         ];
 
         function openSubjectPage(subjectKey) {
             const sub = subjectsData[subjectKey];
             if (!sub) return;
+
             const headerEl = document.getElementById('subject-header');
             headerEl.className = `p-8 rounded-2xl shadow-lg text-white mb-8 flex items-center gap-6 ${sub.bgColor}`;
+            
             let iconHtml = sub.customLogo ? 
                 `<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center font-black text-4xl shadow-inner">${sub.customLogo}</div>` :
                 `<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shadow-inner"><i class="fa-solid ${sub.icon}"></i></div>`;
-            headerEl.innerHTML = `${iconHtml}<div><h3 class="text-3xl font-extrabold mb-1">${sub.title}</h3><p class="text-white/90 text-sm">${sub.desc}</p></div>`;
+
+            headerEl.innerHTML = `
+                ${iconHtml}
+                <div>
+                    <h3 class="text-3xl font-extrabold mb-1">${sub.title}</h3>
+                    <p class="text-white/90 text-sm">${sub.desc}</p>
+                </div>
+            `;
+
             const listEl = document.getElementById('subject-classes-list');
             listEl.innerHTML = sub.classes.map(cls => `
                 <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-sky-50 transition">
                     <span class="font-bold text-slate-700">${cls.name}</span>
-                    <button onclick="openReader('${cls.name} - ${sub.title}', '${cls.link}')" class="bg-coptic-sky text-white font-bold px-4 py-2 rounded-lg hover:bg-coptic-deepSky transition text-sm">قراءة المنهج</button>
+                    <button onclick="openReader('${cls.name} - ${sub.title}', '${cls.link}')" class="bg-coptic-sky text-white font-bold px-4 py-2 rounded-lg hover:bg-coptic-deepSky transition text-sm">
+                        قراءة المنهج
+                    </button>
                 </div>
             `).join('');
+
             showPage('subject-details');
         }
 
         function renderBooks() {
             const grid = document.getElementById('books-grid');
             if (!grid) return;
+            
             grid.innerHTML = booksList.map(book => {
                 let buttonsHtml = '';
-                let arLink = book.copticArLink.replace('/view?usp=drive_link', '/preview').replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
-                let coLink = book.copticLink.replace('/view?usp=drive_link', '/preview').replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
-                if (book.copticArLink) buttonsHtml += `<button onclick="openReader('${book.name} (قبطي مُعرَّب)', '${arLink}')" class="w-full bg-coptic-sky text-white font-bold py-2 px-3 rounded-lg hover:bg-coptic-deepSky transition text-xs mb-2">قبطي مُعرَّب</button>`;
-                if (book.copticLink) buttonsHtml += `<button onclick="openReader('${book.name} (قبطي قبطي)', '${coLink}')" class="w-full bg-amber-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-amber-700 transition text-xs">قبطي قبطي</button>`;
-                if (!book.copticArLink && !book.copticLink) buttonsHtml += `<span class="text-xs text-slate-400 italic">قريباً...</span>`;
+                let arLink = book.copticArLink.replace('/view?usp=drive_link', '/preview').replace('/view', '/preview');
+                let coLink = book.copticLink.replace('/view?usp=drive_link', '/preview').replace('/view', '/preview');
+
+                if (book.copticArLink) {
+                    buttonsHtml += `<button onclick="openReader('${book.name} (قبطي مُعرَّب)', '${arLink}')" class="w-full bg-coptic-sky text-white font-bold py-2 px-3 rounded-lg hover:bg-coptic-deepSky transition text-xs mb-2">قبطي مُعرَّب</button>`;
+                }
+                if (book.copticLink) {
+                    buttonsHtml += `<button onclick="openReader('${book.name} (قبطي قبطي)', '${coLink}')" class="w-full bg-amber-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-amber-700 transition text-xs">قبطي قبطي</button>`;
+                }
+                if (!book.copticArLink && !book.copticLink) {
+                    buttonsHtml += `<span class="text-xs text-slate-400 italic">قريباً...</span>`;
+                }
+
                 return `
                     <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col justify-between hover:shadow-xl transition">
                         <div class="bg-gradient-to-r ${book.bgGradient} p-6 text-white text-center">
-                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner"><i class="fa-solid ${book.icon}"></i></div>
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                                <i class="fa-solid ${book.icon}"></i>
+                            </div>
                             <h4 class="font-bold text-base leading-snug">${book.name}</h4>
                         </div>
-                        <div class="p-4 bg-slate-50 border-t border-slate-100 text-center">${buttonsHtml}</div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 text-center">
+                            ${buttonsHtml}
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -684,331 +742,6 @@
 
         function goBackToPrevious() {
             showPage('home');
-        }
-
-        // قاعدة البيانات الشاملة لنتائج العام الدراسي 2021-2022م
-        const studentsDatabase = [
-            { code: "2101", name: "مارينا مينا سمير", class: "حضانه", level: "التمهيدي", hymns: "73", rituals: "70", coptic: "65", memorization: "14", behavior: "32", total: "254", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "2102", name: "كاراس هاني صلاح", class: "حضانه", level: "التمهيدي", hymns: "70", rituals: "70", coptic: "65", memorization: "12", behavior: "38.5", total: "255.5", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "2103", name: "مریم مدحت صلاح", class: "حضانه", level: "التمهيدي", hymns: "73", rituals: "70", coptic: "25", memorization: "10", behavior: "38.5", total: "216.5", percentage: "72%", evaluation: "جيد" },
-            { code: "2104", name: "أبانوب مينا مكرم", class: "حضانه", level: "التمهيدي", hymns: "73", rituals: "75", coptic: "65", memorization: "12", behavior: "40", total: "265", percentage: "88%", evaluation: "جيد جداً" },
-            { code: "2105", name: "كرستين عدلي فايز", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "69", coptic: "65", memorization: "10", behavior: "35", total: "259", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "2106", name: "كير مينا يوسف إسحق", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "75", coptic: "65", memorization: "16", behavior: "35", total: "271", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2107", name: "إيريني سامح بولس", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "75", coptic: "70", memorization: "14", behavior: "40", total: "279", percentage: "93%", evaluation: "إمتياز" },
-            { code: "2108", name: "فيلومينا سامح بولس", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "74", coptic: "70", memorization: "14", behavior: "40", total: "278", percentage: "93%", evaluation: "إمتياز" },
-            { code: "2109", name: "توني حليم بولس", class: "حضانه", level: "التمهيدي", hymns: "20", rituals: "25", coptic: "20", memorization: "5", behavior: "31", total: "101", percentage: "34%", evaluation: "ضعيف" },
-            { code: "2110", name: "آدم سامح نبیل", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "75", coptic: "70", memorization: "13", behavior: "37.5", total: "275.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2111", name: "يوسف مرقس ملاك", class: "حضانه", level: "التمهيدي", hymns: "78", rituals: "77", coptic: "70", memorization: "13", behavior: "38.5", total: "276.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2112", name: "ميرنا عبد المسيح مرعي", class: "حضانه", level: "التمهيدي", hymns: "78", rituals: "77", coptic: "65", memorization: "13", behavior: "38.5", total: "271.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2113", name: "إيليا مينا مرقس", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "67", coptic: "55", memorization: "10", behavior: "40", total: "232", percentage: "77%", evaluation: "جيد" },
-            { code: "2114", name: "مار في مرقس ناجح", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "75", coptic: "65", memorization: "13", behavior: "38.5", total: "271.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2115", name: "جويس أنطونيوس يونان", class: "حضانه", level: "التمهيدي", hymns: "78", rituals: "75", coptic: "70", memorization: "14", behavior: "36", total: "273", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2116", name: "جويس أفرايم إسحق", class: "حضانه", level: "التمهيدي", hymns: "40", rituals: "35", coptic: "25", memorization: "5", behavior: "26", total: "131", percentage: "44%", evaluation: "ضعيف" },
-            { code: "2117", name: "فيلوباتير كيرلس عيد", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "74", coptic: "70", memorization: "12", behavior: "33.5", total: "254.5", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "2118", name: "فيرينا كيرلس عيد صدقي", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "73", coptic: "65", memorization: "12", behavior: "33.5", total: "248.5", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2119", name: "جوي مايكل ميشيل", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "77", coptic: "65", memorization: "14", behavior: "28", total: "244", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2120", name: "بيشوي أمير ملاك", class: "حضانه", level: "التمهيدي", hymns: "75", rituals: "77", coptic: "65", memorization: "14", behavior: "40", total: "271", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2121", name: "بتول شنودة ملاك", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "65", coptic: "65", memorization: "14", behavior: "35", total: "259", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "2122", name: "مريم كيرلس مكرم", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "77", coptic: "65", memorization: "14", behavior: "40", total: "276", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2123", name: "رانيا فيليب بولس", class: "حضانه", level: "التمهيدي", hymns: "78", rituals: "75", coptic: "70", memorization: "13", behavior: "36", total: "272", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2124", name: "بيشوي صموئيل طلعت", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "80", coptic: "75", memorization: "19.5", behavior: "40", total: "294.5", percentage: "98%", evaluation: "إمتياز" },
-            { code: "2125", name: "مينا إبراهيم يوسف", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "77", coptic: "34.5", memorization: "13", behavior: "70", total: "274.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2126", name: "روفانا جاك إسحق", class: "حضانه", level: "التمهيدي", hymns: "79", rituals: "76", coptic: "38.5", memorization: "14.5", behavior: "70", total: "278", percentage: "93%", evaluation: "إمتياز" },
-            { code: "2127", name: "مريم عبد المسيح إسحق", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "77", coptic: "40", memorization: "19", behavior: "75", total: "291", percentage: "97%", evaluation: "إمتياز" },
-            { code: "2128", name: "يؤانا صموئيل حكيم", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "69", coptic: "70", memorization: "10", behavior: "33.5", total: "247.5", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2129", name: "كاراس مينا ملاك", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "65", coptic: "70", memorization: "12", behavior: "34.5", total: "241.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2130", name: "توماس ثروت فوزي", class: "حضانه", level: "التمهيدي", hymns: "70", rituals: "75", coptic: "70", memorization: "17", behavior: "30", total: "262", percentage: "87%", evaluation: "جيد جداً" },
-            { code: "2131", name: "موسي جرجس ملاك", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "73", coptic: "35", memorization: "11", behavior: "70", total: "254", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "2132", name: "إسحاق أمير هاني", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "76", coptic: "32.5", memorization: "12", behavior: "60", total: "245.5", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "2133", name: "يؤانا ميخائيل زكريا", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "74", coptic: "36", memorization: "10", behavior: "65", total: "245", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "2134", name: "مريم أبانوب صبحي", class: "حضانه", level: "التمهيدي", hymns: "65", rituals: "74", coptic: "36", memorization: "10", behavior: "65", total: "250", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2135", name: "مارلي أمير عزت", class: "حضانه", level: "التمهيدي", hymns: "55", rituals: "73", coptic: "33.5", memorization: "16", behavior: "65", total: "242.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2136", name: "مار في أمير عزت", class: "حضانه", level: "التمهيدي", hymns: "55", rituals: "73", coptic: "33.5", memorization: "12", behavior: "65", total: "238.5", percentage: "80%", evaluation: "جيد" },
-            { code: "2137", name: "سارة إبراهيم جرجس", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "74", coptic: "65", memorization: "10", behavior: "35", total: "244", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2138", name: "فلتاؤس شنودة وليم", class: "حضانه", level: "التمهيدي", hymns: "60", rituals: "74", coptic: "21", memorization: "10", behavior: "70", total: "235", percentage: "78%", evaluation: "جيد" },
-            { code: "2139", name: "كاراس أبانوب ملاك", class: "حضانه", level: "التمهيدي", hymns: "70", rituals: "75", coptic: "29.5", memorization: "8", behavior: "65", total: "247.5", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2140", name: "مریم کامل حنس", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "75", coptic: "35", memorization: "14", behavior: "65", total: "269", percentage: "90%", evaluation: "جيد جداً" },
-            { code: "2141", name: "ابانوب أمير عزت", class: "حضانه", level: "التمهيدي", hymns: "72", rituals: "65", coptic: "65", memorization: "10", behavior: "29.5", total: "241.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2142", name: "كيرلس عبد الملاك شفيق", class: "حضانه", level: "التمهيدي", hymns: "80", rituals: "72", coptic: "70", memorization: "19.5", behavior: "40", total: "281.5", percentage: "94%", evaluation: "إمتياز" },
-            { code: "2143", name: "ماري مينا صبحي", class: "الأول الإبتدائي", level: "الأول", hymns: "77", rituals: "79", coptic: "65", memorization: "18", behavior: "37.5", total: "276.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2144", name: "شنودة أبانوب صبحي", class: "الأول الإبتدائي", level: "الأول", hymns: "60", rituals: "72", coptic: "63", memorization: "10", behavior: "36", total: "241", percentage: "80%", evaluation: "جيد جداً" },
-            { code: "2145", name: "جورج أبانوب محروس", class: "الأول الإبتدائي", level: "الأول", hymns: "62", rituals: "78", coptic: "65", memorization: "15", behavior: "36", total: "256", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "2146", name: "مارفل أمجد إسحق", class: "الأول الإبتدائي", level: "الأول", hymns: "77", rituals: "75", coptic: "70", memorization: "17.5", behavior: "37.5", total: "277", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2147", name: "إيريني حنا نجيب", class: "الأول الإبتدائي", level: "الأول", hymns: "73", rituals: "70", coptic: "79", memorization: "15", behavior: "40", total: "277", percentage: "92%", evaluation: "إمتياز" },
-            { code: "2148", name: "بارثينيا أنطونيوس إبراهيم", class: "الأول الإبتدائي", level: "الأول", hymns: "77", rituals: "65", coptic: "79", memorization: "16", behavior: "33.5", total: "270.5", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2149", name: "مكاري رأفت صدقي", class: "الأول الإبتدائي", level: "الأول", hymns: "55", rituals: "65", coptic: "68", memorization: "12", behavior: "35", total: "235", percentage: "78%", evaluation: "جيد" },
-            { code: "2150", name: "فيلوباتير عبد الشهيد ملاك", class: "الأول الإبتدائي", level: "الأول", hymns: "65", rituals: "79", coptic: "70", memorization: "14", behavior: "38.5", total: "266.5", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "2151", name: "إيلاريا صموئيل فرج", class: "الأول الإبتدائي", level: "الأول", hymns: "72", rituals: "65", coptic: "76", memorization: "15", behavior: "35", total: "263", percentage: "88%", evaluation: "جيد جداً" },
-            { code: "2152", name: "ترنیم شنوده ولیم", class: "الأول الإبتدائي", level: "الأول", hymns: "75", rituals: "65", coptic: "79", memorization: "18", behavior: "21", total: "258", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "2153", name: "نيفان أبانوب نادي", class: "الأول الإبتدائي", level: "الأول", hymns: "75", rituals: "60", coptic: "79", memorization: "17", behavior: "37.5", total: "268.5", percentage: "90%", evaluation: "جيد جداً" },
-            { code: "2154", name: "جرجس إبراهيم جرجس", class: "الأول الإبتدائي", level: "الأول", hymns: "60", rituals: "78", coptic: "65", memorization: "14", behavior: "34", total: "251", percentage: "84%", evaluation: "جيد جداً" },
-            { code: "2155", name: "لوزیانه مینا فایز", class: "الأول الإبتدائي", level: "الأول", hymns: "63", rituals: "70", coptic: "79", memorization: "17", behavior: "36", total: "265", percentage: "88%", evaluation: "جيد جداً" },
-            { code: "2156", name: "شنودة محروس صديق", class: "الأول الإبتدائي", level: "الأول", hymns: "65", rituals: "75", coptic: "63", memorization: "16", behavior: "40", total: "259", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "2157", name: "إبراهيم ملاك شحاته", class: "الأول الإبتدائي", level: "الأول", hymns: "55", rituals: "63", coptic: "68", memorization: "12", behavior: "40", total: "238", percentage: "79%", evaluation: "جيد" },
-            { code: "2158", name: "يوسف أمير هاني", class: "الأول الإبتدائي", level: "الأول", hymns: "77", rituals: "78", coptic: "60", memorization: "17", behavior: "37.5", total: "269.5", percentage: "90%", evaluation: "جيد جداً" },
-            { code: "2159", name: "شنودة مينا نادي", class: "الأول الإبتدائي", level: "الأول", hymns: "50", rituals: "79", coptic: "60", memorization: "12", behavior: "32", total: "233", percentage: "78%", evaluation: "جيد" },
-            { code: "2160", name: "أنستاسيا ملاك ثابت", class: "الأول الإبتدائي", level: "الأول", hymns: "55", rituals: "75", coptic: "65", memorization: "13", behavior: "32", total: "240", percentage: "80%", evaluation: "جيد جداً" },
-            { code: "2161", name: "كارن مرقس ملاك", class: "الأول الإبتدائي", level: "الأول", hymns: "77", rituals: "79", coptic: "75", memorization: "17", behavior: "38.5", total: "286.5", percentage: "96%", evaluation: "إمتياز" },
-            { code: "2162", name: "مريم ميلاد نادي", class: "الأول الإبتدائي", level: "الأول", hymns: "74", rituals: "79", coptic: "70", memorization: "17", behavior: "30", total: "270", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2163", name: "جونير مرقس لمعي", class: "الأول الإبتدائي", level: "الأول", hymns: "76", rituals: "79", coptic: "75", memorization: "18", behavior: "31.5", total: "279.5", percentage: "93%", evaluation: "إمتياز" },
-            { code: "2164", name: "بولا مينا بطرس", class: "الأول الإبتدائي", level: "الأول", hymns: "68", rituals: "74", coptic: "65", memorization: "17", behavior: "40", total: "264", percentage: "88%", evaluation: "جيد جداً" },
-            { code: "2165", name: "مارلي حليم ملاك", class: "الأول الإبتدائي", level: "الأول", hymns: "73", rituals: "75", coptic: "65", memorization: "17", behavior: "40", total: "270", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2166", name: "ماري مدحت ناجح", class: "الثاني الإبتدائي", level: "الأول", hymns: "78", rituals: "63", coptic: "60", memorization: "20", behavior: "37.5", total: "258.5", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "2167", name: "ساره مدحت لویس", class: "الثاني الإبتدائي", level: "الأول", hymns: "80", rituals: "71", coptic: "75", memorization: "20", behavior: "40", total: "286", percentage: "95%", evaluation: "إمتياز" },
-            { code: "2168", name: "كيرلس أمير ميلاد", class: "الثاني الإبتدائي", level: "الأول", hymns: "55", rituals: "61", coptic: "55", memorization: "8", behavior: "37.5", total: "216.5", percentage: "72%", evaluation: "جيد" },
-            { code: "2169", name: "كارن يوسف إسحق", class: "الثاني الإبتدائي", level: "الأول", hymns: "79", rituals: "69", coptic: "60", memorization: "20", behavior: "40", total: "268", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "2170", name: "آدم ميلاد عبد الساتر", class: "الثاني الإبتدائي", level: "الأول", hymns: "70", rituals: "58", coptic: "65", memorization: "13", behavior: "40", total: "246", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "2171", name: "شنوده صموئيل سمير", class: "الثاني الإبتدائي", level: "الأول", hymns: "61", rituals: "54", coptic: "55", memorization: "11", behavior: "37.5", total: "218.5", percentage: "73%", evaluation: "جيد" },
-            { code: "2172", name: "شنودة مرقس عيد نعيم", class: "الثاني الإبتدائي", level: "الأول", hymns: "74", rituals: "55", coptic: "65", memorization: "15", behavior: "40", total: "249", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2173", name: "إيريني مدحت ملاك", class: "الثاني الإبتدائي", level: "الأول", hymns: "74", rituals: "63", coptic: "55", memorization: "20", behavior: "37.5", total: "249.5", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2174", name: "مرقس ملاك مرقس", class: "الثاني الإبتدائي", level: "الأول", hymns: "59", rituals: "50", coptic: "55", memorization: "14", behavior: "38.5", total: "216.5", percentage: "72%", evaluation: "جيد" },
-            { code: "2175", name: "شنودة باسم نادي", class: "الثاني الإبتدائي", level: "الأول", hymns: "60", rituals: "45", coptic: "60", memorization: "9", behavior: "33.5", total: "207.5", percentage: "69%", evaluation: "مقبول" },
-            { code: "2176", name: "کاراس عماد سمير", class: "الثاني الإبتدائي", level: "الأول", hymns: "50", rituals: "50", coptic: "50", memorization: "10", behavior: "28.5", total: "188.5", percentage: "63%", evaluation: "مقبول" },
-            { code: "2177", name: "ميرونيا رأفت فوزي", class: "الثاني الإبتدائي", level: "الأول", hymns: "65", rituals: "52", coptic: "55", memorization: "13", behavior: "40", total: "225", percentage: "75%", evaluation: "جيد" },
-            { code: "2178", name: "مريم مينا صفوت", class: "الثاني الإبتدائي", level: "الأول", hymns: "75", rituals: "58", coptic: "60", memorization: "15", behavior: "29.5", total: "237.5", percentage: "79%", evaluation: "جيد" },
-            { code: "2179", name: "سارة ايمن يوسف", class: "الثاني الإبتدائي", level: "الأول", hymns: "73", rituals: "50", coptic: "60", memorization: "11", behavior: "37.5", total: "231.5", percentage: "77%", evaluation: "جيد" },
-            { code: "2180", name: "إيلاريا مينا سمير", class: "الثاني الإبتدائي", level: "الأول", hymns: "65", rituals: "50", coptic: "45", memorization: "10", behavior: "40", total: "210", percentage: "70%", evaluation: "جيد" },
-            { code: "2181", name: "رویس شنوده خلیل", class: "الثاني الإبتدائي", level: "الأول", hymns: "64", rituals: "59", coptic: "60", memorization: "16", behavior: "35", total: "234", percentage: "78%", evaluation: "جيد" },
-            { code: "2182", name: "ساندي بطرس شفيق", class: "الثاني الإبتدائي", level: "الأول", hymns: "71", rituals: "50", coptic: "50", memorization: "14", behavior: "40", total: "225", percentage: "75%", evaluation: "جيد" },
-            { code: "2183", name: "كيرمينا عادل مليكة", class: "الثاني الإبتدائي", level: "الأول", hymns: "68", rituals: "57", coptic: "55", memorization: "18", behavior: "38.5", total: "236.5", percentage: "79%", evaluation: "جيد" },
-            { code: "2184", name: "مارسلينو جاك إسحق", class: "الثاني الإبتدائي", level: "الثاني", hymns: "60", rituals: "58", coptic: "50", memorization: "17", behavior: "33", total: "218", percentage: "73%", evaluation: "جيد" },
-            { code: "2185", name: "مورا شنودة ملاك", class: "الثالث الإبتدائي", level: "الثاني", hymns: "60", rituals: "33", coptic: "55", memorization: "14", behavior: "35", total: "197", percentage: "66%", evaluation: "مقبول" },
-            { code: "2186", name: "ماري جرجس عيد", class: "الثالث الإبتدائي", level: "الثاني", hymns: "64", rituals: "60", coptic: "55", memorization: "13", behavior: "40", total: "232", percentage: "77%", evaluation: "جيد" },
-            { code: "2187", name: "مهرائيل مجدي ميلاد", class: "الثالث الإبتدائي", level: "الثاني", hymns: "59", rituals: "55", coptic: "60", memorization: "15", behavior: "36", total: "225", percentage: "75%", evaluation: "جيد" },
-            { code: "2188", name: "بيشوي أنطونيوس يونان", class: "الثالث الإبتدائي", level: "الثاني", hymns: "77", rituals: "65", coptic: "70", memorization: "17", behavior: "38.5", total: "267.5", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "2189", name: "مريم عدلي فايز", class: "الثالث الإبتدائي", level: "الثاني", hymns: "65", rituals: "60", coptic: "70", memorization: "18", behavior: "36", total: "249", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "2190", name: "سيمون سامح بولس", class: "الثالث الإبتدائي", level: "الثاني", hymns: "74", rituals: "69", coptic: "75", memorization: "16", behavior: "37.5", total: "271.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2191", name: "شنودة عبد الشهيد ملاك", class: "الثالث الإبتدائي", level: "الثاني", hymns: "60", rituals: "65", coptic: "65", memorization: "14", behavior: "38.5", total: "242.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "2192", name: "ساندي مينا نادي", class: "الثالث الإبتدائي", level: "الثاني", hymns: "55", rituals: "55", coptic: "70", memorization: "14", behavior: "30.5", total: "224.5", percentage: "75%", evaluation: "جيد" },
-            { code: "2193", name: "يوستينا رضا محروس", class: "الثالث الإبتدائي", level: "الثاني", hymns: "75", rituals: "73", coptic: "70", memorization: "18", behavior: "35", total: "271", percentage: "90%", evaluation: "إمتياز" },
-            { code: "2194", name: "جورج عبد المسيح عيد", class: "الثالث الإبتدائي", level: "الثاني", hymns: "76", rituals: "75", coptic: "70", memorization: "18", behavior: "33.5", total: "272.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "2195", name: "يوستينا سامح ميلاد", class: "الثالث الإبتدائي", level: "الثاني", hymns: "57", rituals: "65", coptic: "65", memorization: "16", behavior: "35", total: "238", percentage: "79%", evaluation: "جيد" },
-            { code: "2196", name: "ماريز حزين صليب", class: "الثالث الإبتدائي", level: "الثاني", hymns: "64", rituals: "71", coptic: "60", memorization: "15", behavior: "28", total: "238", percentage: "79%", evaluation: "جيد" },
-            { code: "2197", name: "دميانه صبحي عيد", class: "الثالث الإبتدائي", level: "الثاني", hymns: "54", rituals: "63", coptic: "55", memorization: "9", behavior: "38.5", total: "219.5", percentage: "73%", evaluation: "جيد" },
-            { code: "2198", name: "ماریهان شهير ملاك", class: "الثالث الإبتدائي", level: "الثاني", hymns: "69", rituals: "77", coptic: "65", memorization: "17.5", behavior: "37.5", total: "266", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "2199", name: "ميخائيل ملاك لطفي", class: "الثالث الإبتدائي", level: "الثاني", hymns: "80", rituals: "79", coptic: "70", memorization: "20", behavior: "36", total: "285", percentage: "95%", evaluation: "إمتياز" },
-            { code: "21100", name: "مريم رضا حنا", class: "الثالث الإبتدائي", level: "الثاني", hymns: "65", rituals: "65", coptic: "70", memorization: "13", behavior: "37.5", total: "250.5", percentage: "84%", evaluation: "جيد جداً" },
-            { code: "21101", name: "كريستين شنودة سمير", class: "الثالث الإبتدائي", level: "الثاني", hymns: "64", rituals: "62", coptic: "55", memorization: "14", behavior: "38.5", total: "233.5", percentage: "78%", evaluation: "جيد" },
-            { code: "21102", name: "دولاجي عازر خليل", class: "الثالث الإبتدائي", level: "الثاني", hymns: "60", rituals: "60", coptic: "60", memorization: "13", behavior: "36", total: "229", percentage: "76%", evaluation: "جيد" },
-            { code: "21103", name: "مارينا صليب حكيم", class: "الثالث الإبتدائي", level: "الثاني", hymns: "57", rituals: "60", coptic: "55", memorization: "15", behavior: "34.5", total: "221.5", percentage: "74%", evaluation: "جيد" },
-            { code: "21104", name: "نظير عبد الشهيد متي", class: "الثالث الإبتدائي", level: "الثاني", hymns: "30", rituals: "25", coptic: "20", memorization: "4", behavior: "25", total: "104", percentage: "35%", evaluation: "ضعيف" },
-            { code: "21105", name: "مريم عبد الشهيد ملاك", class: "الثالث الإبتدائي", level: "الثاني", hymns: "60", rituals: "60", coptic: "60", memorization: "12.5", behavior: "26", total: "218.5", percentage: "73%", evaluation: "جيد" },
-            { code: "21106", name: "إستيفن زكريا مكرم", class: "الرابع الإبتدائي", level: "الثاني", hymns: "58", rituals: "52", coptic: "28", memorization: "16", behavior: "40", total: "194", percentage: "65%", evaluation: "مقبول" },
-            { code: "21107", name: "ماركو مينا مرقس", class: "الرابع الإبتدائي", level: "الثاني", hymns: "77", rituals: "68", coptic: "72", memorization: "20", behavior: "38.5", total: "275.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21108", name: "إيلاريا مينا مكرم", class: "الرابع الإبتدائي", level: "الثاني", hymns: "65", rituals: "60", coptic: "68", memorization: "15", behavior: "40", total: "248", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "21109", name: "جورج معوض مصباح", class: "الرابع الإبتدائي", level: "الثاني", hymns: "52", rituals: "60", coptic: "34", memorization: "15", behavior: "26", total: "187", percentage: "62%", evaluation: "مقبول" },
-            { code: "21110", name: "روفائيل صموئيل لويس", class: "الرابع الإبتدائي", level: "الثاني", hymns: "53", rituals: "48", coptic: "48", memorization: "12", behavior: "31", total: "192", percentage: "64%", evaluation: "مقبول" },
-            { code: "21111", name: "اردينا مدحت ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "61", rituals: "68", coptic: "64", memorization: "13", behavior: "37.5", total: "243.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "21112", name: "جونير ملاك يوسف", class: "الرابع الإبتدائي", level: "الثاني", hymns: "55", rituals: "44", coptic: "44", memorization: "16", behavior: "40", total: "199", percentage: "66%", evaluation: "مقبول" },
-            { code: "21113", name: "جومانا ملاك مرقس", class: "الرابع الإبتدائي", level: "الثاني", hymns: "64", rituals: "72", coptic: "56", memorization: "16", behavior: "40", total: "248", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "21114", name: "صموئيل ملاك شحاته", class: "الرابع الإبتدائي", level: "الثاني", hymns: "52", rituals: "48", coptic: "36", memorization: "9", behavior: "35.5", total: "180.5", percentage: "60%", evaluation: "مقبول" },
-            { code: "21115", name: "كاراس عبد الشهيد سمير", class: "الرابع الإبتدائي", level: "الثاني", hymns: "80", rituals: "80", coptic: "56", memorization: "19", behavior: "37.5", total: "272.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21116", name: "ملك حنا شحاته", class: "الرابع الإبتدائي", level: "الثاني", hymns: "61", rituals: "40", coptic: "48", memorization: "15", behavior: "37.5", total: "201.5", percentage: "67%", evaluation: "مقبول" },
-            { code: "21117", name: "جورج میلاد صفوت", class: "الرابع الإبتدائي", level: "الثاني", hymns: "52", rituals: "24", coptic: "36", memorization: "11", behavior: "33.5", total: "156.5", percentage: "52%", evaluation: "ضعيف" },
-            { code: "21118", name: "صموئيل اشرف ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "69", rituals: "36", coptic: "56", memorization: "18", behavior: "37.5", total: "216.5", percentage: "72%", evaluation: "جيد" },
-            { code: "21119", name: "کاراس ملاك صليب", class: "الرابع الإبتدائي", level: "الثاني", hymns: "30", rituals: "68", coptic: "60", memorization: "19", behavior: "37.5", total: "214.5", percentage: "72%", evaluation: "جيد" },
-            { code: "21120", name: "ماري مرقس رشدي", class: "الرابع الإبتدائي", level: "الثاني", hymns: "56", rituals: "56", coptic: "36", memorization: "12", behavior: "40", total: "200", percentage: "67%", evaluation: "مقبول" },
-            { code: "21121", name: "مار في مينا ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "68", rituals: "68", coptic: "68", memorization: "19", behavior: "37.5", total: "260.5", percentage: "87%", evaluation: "جيد جداً" },
-            { code: "21122", name: "كيرلس مينا فايز", class: "الرابع الإبتدائي", level: "الثاني", hymns: "55", rituals: "44", coptic: "36", memorization: "9", behavior: "37.5", total: "181.5", percentage: "61%", evaluation: "مقبول" },
-            { code: "21123", name: "صموئيل حنا نجيب", class: "الرابع الإبتدائي", level: "الثاني", hymns: "54", rituals: "32", coptic: "44", memorization: "12", behavior: "40", total: "182", percentage: "61%", evaluation: "مقبول" },
-            { code: "21124", name: "جوزيف مينا بطرس", class: "الرابع الإبتدائي", level: "الثاني", hymns: "77", rituals: "76", coptic: "68", memorization: "20", behavior: "40", total: "281", percentage: "94%", evaluation: "إمتياز" },
-            { code: "21125", name: "انطون امير ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "79", rituals: "80", coptic: "76", memorization: "19", behavior: "40", total: "294", percentage: "98%", evaluation: "إمتياز" },
-            { code: "21126", name: "جومانا شنودة سمير", class: "الرابع الإبتدائي", level: "الثاني", hymns: "59", rituals: "32", coptic: "28", memorization: "10", behavior: "40", total: "169", percentage: "56%", evaluation: "ضعيف" },
-            { code: "21127", name: "أردينا مينا ميخائيل", class: "الرابع الإبتدائي", level: "الثاني", hymns: "56", rituals: "16", coptic: "24", memorization: "11", behavior: "40", total: "147", percentage: "49%", evaluation: "ضعيف" },
-            { code: "21128", name: "إنجي صليب ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "68", rituals: "64", coptic: "44", memorization: "17", behavior: "35", total: "228", percentage: "76%", evaluation: "جيد" },
-            { code: "21129", name: "جومانا ملاك يوسف", class: "الرابع الإبتدائي", level: "الثاني", hymns: "73", rituals: "52", coptic: "72", memorization: "11", behavior: "37.5", total: "245.5", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21130", name: "ابانوب مرقس نادي", class: "الرابع الإبتدائي", level: "الثاني", hymns: "61", rituals: "60", coptic: "76", memorization: "19", behavior: "40", total: "256", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "21131", name: "ماري جرجس ملاك", class: "الرابع الإبتدائي", level: "الثاني", hymns: "76", rituals: "72", coptic: "52", memorization: "19", behavior: "40", total: "259", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "21132", name: "سالي مجدي يوسف", class: "الرابع الإبتدائي", level: "الثاني", hymns: "76", rituals: "68", coptic: "72", memorization: "15", behavior: "40", total: "271", percentage: "90%", evaluation: "إمتياز" },
-            { code: "21133", name: "ساندي صليب حنا", class: "الرابع الإبتدائي", level: "الثاني", hymns: "77", rituals: "68", coptic: "68", memorization: "17", behavior: "40", total: "270", percentage: "90%", evaluation: "إمتياز" },
-            { code: "21134", name: "ريموندا نبيل سلامه", class: "الرابع الإبتدائي", level: "الثاني", hymns: "62", rituals: "50", coptic: "36", memorization: "12", behavior: "37.5", total: "197.5", percentage: "66%", evaluation: "مقبول" },
-            { code: "21135", name: "أرميا شنودة صبحي", class: "الرابع الإبتدائي", level: "الثاني", hymns: "53", rituals: "28", coptic: "36", memorization: "10", behavior: "26", total: "153", percentage: "51%", evaluation: "ضعيف" },
-            { code: "21136", name: "مريم ملاك خليل", class: "الرابع الإبتدائي", level: "الثاني", hymns: "61", rituals: "40", coptic: "40", memorization: "12", behavior: "35", total: "188", percentage: "63%", evaluation: "مقبول" },
-            { code: "21137", name: "مارين شنوده عازر", class: "الرابع الإبتدائي", level: "الثاني", hymns: "67", rituals: "56", coptic: "64", memorization: "12", behavior: "32.5", total: "231.5", percentage: "77%", evaluation: "جيد" },
-            { code: "21138", name: "فادي شنودة ملاك", class: "الخامس الإبتدائي", level: "الثالث", hymns: "68", rituals: "48", coptic: "60", memorization: "19", behavior: "35.5", total: "230.5", percentage: "77%", evaluation: "جيد" },
-            { code: "21139", name: "صبري جرجس عيد", class: "الخامس الإبتدائي", level: "الثالث", hymns: "62", rituals: "28", coptic: "24", memorization: "16", behavior: "38", total: "168", percentage: "56%", evaluation: "ضعيف" },
-            { code: "21140", name: "كيرلس ميخائيل فهمي", class: "الخامس الإبتدائي", level: "الثالث", hymns: "54", rituals: "32", coptic: "52", memorization: "16", behavior: "36.5", total: "190.5", percentage: "64%", evaluation: "مقبول" },
-            { code: "21141", name: "كيرلس يوسف اسحق", class: "الخامس الإبتدائي", level: "الثالث", hymns: "69", rituals: "68", coptic: "76", memorization: "18", behavior: "33", total: "264", percentage: "88%", evaluation: "جيد جداً" },
-            { code: "21142", name: "ميخائيل عدلي فايز", class: "الخامس الإبتدائي", level: "الثالث", hymns: "54", rituals: "36", coptic: "28", memorization: "12", behavior: "34.5", total: "164.5", percentage: "55%", evaluation: "ضعيف" },
-            { code: "21143", name: "بولا جيد حنا", class: "الخامس الإبتدائي", level: "الثالث", hymns: "66", rituals: "64", coptic: "60", memorization: "19", behavior: "38", total: "247", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21144", name: "كيرلس ملاك شحاته", class: "الخامس الإبتدائي", level: "الثالث", hymns: "72", rituals: "40", coptic: "48", memorization: "13", behavior: "37", total: "210", percentage: "70%", evaluation: "جيد" },
-            { code: "21145", name: "اوليفيا رضا محروس", class: "الخامس الإبتدائي", level: "الثالث", hymns: "74", rituals: "74", coptic: "76", memorization: "18", behavior: "36.5", total: "278.5", percentage: "93%", evaluation: "إمتياز" },
-            { code: "21146", name: "جونير عبد المسيح عيد", class: "الخامس الإبتدائي", level: "الثالث", hymns: "74", rituals: "76", coptic: "76", memorization: "19", behavior: "37.5", total: "282.5", percentage: "94%", evaluation: "إمتياز" },
-            { code: "21147", name: "مینا رضا صلاح", class: "الخامس الإبتدائي", level: "الثالث", hymns: "60", rituals: "24", coptic: "36", memorization: "9", behavior: "36.5", total: "165.5", percentage: "55%", evaluation: "ضعيف" },
-            { code: "21148", name: "كيرلس عماد خليل", class: "الخامس الإبتدائي", level: "الثالث", hymns: "53", rituals: "44", coptic: "44", memorization: "15", behavior: "30.5", total: "186.5", percentage: "62%", evaluation: "مقبول" },
-            { code: "21149", name: "مريم صليب حكيم", class: "الخامس الإبتدائي", level: "الثالث", hymns: "75", rituals: "72", coptic: "72", memorization: "20", behavior: "32.5", total: "271.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21150", name: "كيرلس مينا نصحي", class: "الخامس الإبتدائي", level: "الثالث", hymns: "71", rituals: "76", coptic: "72", memorization: "18", behavior: "39", total: "276", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21151", name: "ايريني مينا مكرم", class: "الخامس الإبتدائي", level: "الثالث", hymns: "63", rituals: "48", coptic: "44", memorization: "16", behavior: "38.5", total: "209.5", percentage: "70%", evaluation: "مقبول" },
-            { code: "21152", name: "ابانوب حنا شحاته", class: "الخامس الإبتدائي", level: "الثالث", hymns: "51", rituals: "52", coptic: "48", memorization: "11", behavior: "27", total: "189", percentage: "63%", evaluation: "مقبول" },
-            { code: "21153", name: "مريم مجدي ميلاد", class: "الخامس الإبتدائي", level: "الثالث", hymns: "50", rituals: "44", coptic: "33", memorization: "12", behavior: "37.5", total: "176.5", percentage: "59%", evaluation: "ضعيف" },
-            { code: "21154", name: "ريمون فيليب بولس", class: "الخامس الإبتدائي", level: "الثالث", hymns: "64", rituals: "40", coptic: "76", memorization: "18", behavior: "37.5", total: "235.5", percentage: "79%", evaluation: "جيد" },
-            { code: "21155", name: "کاراس ماجد مقار", class: "الخامس الإبتدائي", level: "الثالث", hymns: "74", rituals: "64", coptic: "48", memorization: "19", behavior: "27.5", total: "232.5", percentage: "78%", evaluation: "جيد" },
-            { code: "21156", name: "مينا أمير هاني", class: "الخامس الإبتدائي", level: "الثالث", hymns: "59", rituals: "72", coptic: "68", memorization: "19", behavior: "39", total: "257", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "21157", name: "ماركو رضا عوض", class: "الخامس الإبتدائي", level: "الثالث", hymns: "46", rituals: "32", coptic: "28", memorization: "8", behavior: "29", total: "143", percentage: "48%", evaluation: "ضعيف" },
-            { code: "21158", name: "كاراس أمير متي", class: "الخامس الإبتدائي", level: "الثالث", hymns: "20", rituals: "24", coptic: "24", memorization: "4", behavior: "25.5", total: "97.5", percentage: "33%", evaluation: "ضعيف" },
-            { code: "21159", name: "سيلفيا عبد الشهيد متي", class: "الخامس الإبتدائي", level: "الثالث", hymns: "55", rituals: "68", coptic: "64", memorization: "20", behavior: "40", total: "247", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21160", name: "كيرلس میلاد محروس", class: "الخامس الإبتدائي", level: "الثالث", hymns: "51", rituals: "60", coptic: "32", memorization: "15", behavior: "25", total: "183", percentage: "61%", evaluation: "مقبول" },
-            { code: "21161", name: "توماس عبد الشهيد ملاك", class: "الخامس الإبتدائي", level: "الثالث", hymns: "60", rituals: "60", coptic: "56", memorization: "19", behavior: "31.5", total: "226.5", percentage: "76%", evaluation: "جيد" },
-            { code: "21162", name: "مریم رافت شارود", class: "الخامس الإبتدائي", level: "الثالث", hymns: "55", rituals: "60", coptic: "60", memorization: "18", behavior: "32.5", total: "225.5", percentage: "75%", evaluation: "جيد" },
-            { code: "21163", name: "ساره هاني كامل", class: "الخامس الإبتدائي", level: "الثالث", hymns: "53", rituals: "40", coptic: "40", memorization: "16", behavior: "32.5", total: "181.5", percentage: "61%", evaluation: "مقبول" },
-            { code: "21164", name: "ساندي مرقس لويس", class: "الخامس الإبتدائي", level: "الثالث", hymns: "55", rituals: "60", coptic: "72", memorization: "17", behavior: "26", total: "230", percentage: "77%", evaluation: "جيد" },
-            { code: "21165", name: "كيرلس حنا لطفي", class: "الخامس الإبتدائي", level: "الثالث", hymns: "46", rituals: "36", coptic: "24", memorization: "9", behavior: "25.5", total: "140.5", percentage: "47%", evaluation: "ضعيف" },
-            { code: "21166", name: "يوسف جرجس يوسف", class: "السادس الإبتدائي", level: "الثالث", hymns: "60", rituals: "24", coptic: "56", memorization: "15", behavior: "35", total: "190", percentage: "63%", evaluation: "مقبول" },
-            { code: "21167", name: "أبانوب زكريا مكرم", class: "السادس الإبتدائي", level: "الثالث", hymns: "77", rituals: "64", coptic: "76", memorization: "18", behavior: "40", total: "275", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21168", name: "أندرو عماد يوسف", class: "السادس الإبتدائي", level: "الثالث", hymns: "77", rituals: "76", coptic: "80", memorization: "19", behavior: "40", total: "292", percentage: "97%", evaluation: "إمتياز" },
-            { code: "21169", name: "كيرلس مينا مرقس", class: "السادس الإبتدائي", level: "الثالث", hymns: "73", rituals: "72", coptic: "72", memorization: "20", behavior: "38.5", total: "275.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21170", name: "كرستين صموئيل لويس", class: "السادس الإبتدائي", level: "الثالث", hymns: "25", rituals: "40", coptic: "40", memorization: "10", behavior: "28.5", total: "143.5", percentage: "48%", evaluation: "ضعيف" },
-            { code: "21171", name: "جون میلاد مکرم", class: "السادس الإبتدائي", level: "الثالث", hymns: "25", rituals: "36", coptic: "36", memorization: "9", behavior: "38.5", total: "144.5", percentage: "48%", evaluation: "ضعيف" },
-            { code: "21172", name: "مريم صبحي عيد", class: "السادس الإبتدائي", level: "الثالث", hymns: "71", rituals: "36", coptic: "44", memorization: "9", behavior: "40", total: "200", percentage: "67%", evaluation: "مقبول" },
-            { code: "21173", name: "جوليا مينا بطرس", class: "السادس الإبتدائي", level: "الثالث", hymns: "77", rituals: "68", coptic: "80", memorization: "16", behavior: "40", total: "281", percentage: "94%", evaluation: "إمتياز" },
-            { code: "21174", name: "يوسف هاني حبيب", class: "السادس الإبتدائي", level: "الثالث", hymns: "65", rituals: "72", coptic: "64", memorization: "15", behavior: "35", total: "251", percentage: "84%", evaluation: "جيد جداً" },
-            { code: "21175", name: "إنجي هاني خليل", class: "السادس الإبتدائي", level: "الثالث", hymns: "74", rituals: "48", coptic: "68", memorization: "10", behavior: "37.5", total: "237.5", percentage: "79%", evaluation: "جيد" },
-            { code: "21176", name: "جرجس هاني منير", class: "السادس الإبتدائي", level: "الثالث", hymns: "53", rituals: "68", coptic: "48", memorization: "14", behavior: "37.5", total: "220.5", percentage: "74%", evaluation: "جيد" },
-            { code: "21177", name: "فيلوباتير سامح ميلاد", class: "السادس الإبتدائي", level: "الثالث", hymns: "28", rituals: "28", coptic: "32", memorization: "7", behavior: "40", total: "135", percentage: "45%", evaluation: "ضعيف" },
-            { code: "21178", name: "مرقس ملاك خليل", class: "السادس الإبتدائي", level: "الثالث", hymns: "60", rituals: "72", coptic: "72", memorization: "19", behavior: "35", total: "258", percentage: "86%", evaluation: "جيد جداً" },
-            { code: "21179", name: "رامي عازر نصحي", class: "السادس الإبتدائي", level: "الثالث", hymns: "67", rituals: "68", coptic: "64", memorization: "16", behavior: "33.5", total: "248.5", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "21180", name: "مرقس ميخائيل فهمي", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "40", coptic: "48", memorization: "18", behavior: "30", total: "182", percentage: "61%", evaluation: "مقبول" },
-            { code: "21181", name: "مینا امیر میلاد", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "52", coptic: "36", memorization: "19", behavior: "33.5", total: "186.5", percentage: "62%", evaluation: "مقبول" },
-            { code: "21182", name: "ابانوب مينا عبد الملاك", class: "الأول الإعدادي", level: "الرابع", hymns: "51", rituals: "60", coptic: "48", memorization: "17", behavior: "29", total: "205", percentage: "68%", evaluation: "مقبول" },
-            { code: "21183", name: "كيرلس عبد الشهيد سمير", class: "الأول الإعدادي", level: "الرابع", hymns: "76", rituals: "64", coptic: "72", memorization: "20", behavior: "40", total: "272", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21184", name: "مريم هاني لطفي", class: "الأول الإعدادي", level: "الرابع", hymns: "71", rituals: "60", coptic: "60", memorization: "20", behavior: "40", total: "251", percentage: "84%", evaluation: "جيد جداً" },
-            { code: "21185", name: "كيرلس مينا صفوت", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "44", coptic: "38", memorization: "14", behavior: "29.5", total: "171.5", percentage: "57%", evaluation: "ضعيف" },
-            { code: "21186", name: "جومانا ملاك صليب", class: "الأول الإعدادي", level: "الرابع", hymns: "74", rituals: "60", coptic: "72", memorization: "20", behavior: "36", total: "262", percentage: "87%", evaluation: "جيد جداً" },
-            { code: "21187", name: "مريم ايمن ملاك", class: "الأول الإعدادي", level: "الرابع", hymns: "69", rituals: "60", coptic: "56", memorization: "18", behavior: "40", total: "243", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "21188", name: "ايريني اشرف مسعد", class: "الأول الإعدادي", level: "الرابع", hymns: "71", rituals: "56", coptic: "56", memorization: "20", behavior: "36", total: "239", percentage: "80%", evaluation: "جيد" },
-            { code: "21189", name: "يوسف اسحق عبد الملاك", class: "الأول الإعدادي", level: "الرابع", hymns: "78", rituals: "64", coptic: "74", memorization: "20", behavior: "38.5", total: "274.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21190", name: "ابرام مينا نصحي", class: "الأول الإعدادي", level: "الرابع", hymns: "80", rituals: "76", coptic: "52", memorization: "20", behavior: "37.5", total: "265.5", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "21191", name: "ساره وجيه شارود", class: "الأول الإعدادي", level: "الرابع", hymns: "70", rituals: "60", coptic: "52", memorization: "20", behavior: "37.5", total: "239.5", percentage: "80%", evaluation: "جيد" },
-            { code: "21192", name: "مهرائيل مرقس عيد", class: "الأول الإعدادي", level: "الرابع", hymns: "32", rituals: "20", coptic: "34", memorization: "10", behavior: "36", total: "132", percentage: "44%", evaluation: "ضعيف" },
-            { code: "21193", name: "يوسف رأفت سمير", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "64", coptic: "50", memorization: "18", behavior: "27", total: "205", percentage: "68%", evaluation: "مقبول" },
-            { code: "21194", name: "كيرلس باسم نادي", class: "الأول الإعدادي", level: "الرابع", hymns: "50", rituals: "60", coptic: "56", memorization: "18", behavior: "36", total: "220", percentage: "73%", evaluation: "جيد" },
-            { code: "21195", name: "كيرلس ماركو فخري", class: "الأول الإعدادي", level: "الرابع", hymns: "51", rituals: "60", coptic: "60", memorization: "18", behavior: "40", total: "229", percentage: "76%", evaluation: "جيد" },
-            { code: "21196", name: "مريم شنودة صبحي", class: "الأول الإعدادي", level: "الرابع", hymns: "70", rituals: "44", coptic: "68", memorization: "20", behavior: "36", total: "238", percentage: "79%", evaluation: "جيد" },
-            { code: "21197", name: "جورج يونان فخري", class: "الأول الإعدادي", level: "الرابع", hymns: "50", rituals: "60", coptic: "70", memorization: "19", behavior: "35", total: "234", percentage: "78%", evaluation: "جيد" },
-            { code: "21198", name: "يسطس رضا رشدي", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "44", coptic: "44", memorization: "16", behavior: "40", total: "190", percentage: "63%", evaluation: "مقبول" },
-            { code: "21199", name: "ميخائيل هاني رشدي", class: "الأول الإعدادي", level: "الرابع", hymns: "46", rituals: "76", coptic: "42", memorization: "17", behavior: "25.5", total: "206.5", percentage: "69%", evaluation: "مقبول" },
-            { code: "21200", name: "مادونا إليشع ذكي", class: "الأول الإعدادي", level: "الرابع", hymns: "69", rituals: "16", coptic: "16", memorization: "7", behavior: "31", total: "139", percentage: "46%", evaluation: "ضعيف" },
-            { code: "21201", name: "جومانا صبري عيد", class: "الأول الإعدادي", level: "الرابع", hymns: "0", rituals: "0", coptic: "0", memorization: "0", behavior: "30", total: "30", percentage: "10%", evaluation: "ضعيف" },
-            { code: "21202", name: "كاراس هاني كامل", class: "الأول الإعدادي", level: "الرابع", hymns: "65", rituals: "64", coptic: "60", memorization: "20", behavior: "27.5", total: "236.5", percentage: "79%", evaluation: "جيد" },
-            { code: "21203", name: "فيرونيا صبحي مكرم", class: "الأول الإعدادي", level: "الرابع", hymns: "70", rituals: "40", coptic: "52", memorization: "17", behavior: "37.5", total: "216.5", percentage: "72%", evaluation: "جيد" },
-            { code: "21204", name: "إيريني أسامة إسحاق", class: "الأول الإعدادي", level: "الرابع", hymns: "0", rituals: "0", coptic: "0", memorization: "0", behavior: "34.5", total: "34.5", percentage: "12%", evaluation: "ضعيف" },
-            { code: "21205", name: "جرجس صليب ملاك", class: "الأول الإعدادي", level: "الرابع", hymns: "66", rituals: "60", coptic: "60", memorization: "19", behavior: "32", total: "237", percentage: "79%", evaluation: "جيد" },
-            { code: "21206", name: "جورج حليم ملاك", class: "الأول الإعدادي", level: "الرابع", hymns: "51", rituals: "32", coptic: "30", memorization: "15", behavior: "29.5", total: "157.5", percentage: "53%", evaluation: "ضعيف" },
-            { code: "21208", name: "مريم صبري صلاح", class: "الأول الإعدادي", level: "الرابع", hymns: "32", rituals: "24", coptic: "30", memorization: "10", behavior: "32", total: "128", percentage: "43%", evaluation: "ضعيف" },
-            { code: "21210", name: "مارينا مدحت لويس", class: "الثاني الإعدادي", level: "الرابع", hymns: "80", rituals: "72", coptic: "76", memorization: "19", behavior: "33", total: "280", percentage: "93%", evaluation: "إمتياز" },
-            { code: "21211", name: "دينا صموئيل لويس", class: "الثاني الإعدادي", level: "الرابع", hymns: "74", rituals: "68", coptic: "74", memorization: "20", behavior: "37", total: "273", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21212", name: "ندي جيد حنا", class: "الثاني الإعدادي", level: "الرابع", hymns: "74", rituals: "56", coptic: "56", memorization: "20", behavior: "40", total: "246", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21213", name: "ساره ملاك مرقس", class: "الثاني الإعدادي", level: "الرابع", hymns: "78", rituals: "64", coptic: "68", memorization: "19", behavior: "40", total: "269", percentage: "90%", evaluation: "جيد جداً" },
-            { code: "21214", name: "حنا رضا حنا", class: "الثاني الإعدادي", level: "الرابع", hymns: "66", rituals: "52", coptic: "72", memorization: "20", behavior: "35", total: "245", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21215", name: "انطونيوس حنا شحاته", class: "الثاني الإعدادي", level: "الرابع", hymns: "76", rituals: "72", coptic: "70", memorization: "20", behavior: "35", total: "273", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21216", name: "جون مجدي حنا", class: "الثاني الإعدادي", level: "الرابع", hymns: "62", rituals: "64", coptic: "72", memorization: "19", behavior: "34.5", total: "251.5", percentage: "84%", evaluation: "جيد جداً" },
-            { code: "21217", name: "إسحاق ملاك إسحاق", class: "الثاني الإعدادي", level: "الرابع", hymns: "75", rituals: "72", coptic: "72", memorization: "20", behavior: "38.5", total: "277.5", percentage: "93%", evaluation: "إمتياز" },
-            { code: "21218", name: "مينا صليب حنا", class: "الثاني الإعدادي", level: "الرابع", hymns: "0", rituals: "0", coptic: "0", memorization: "0", behavior: "33", total: "33", percentage: "11%", evaluation: "ضعيف" },
-            { code: "21219", name: "بيشوي أمير يونان", class: "الثاني الإعدادي", level: "الرابع", hymns: "79", rituals: "80", coptic: "80", memorization: "20", behavior: "40", total: "299", percentage: "100%", evaluation: "إمتياز" },
-            { code: "21220", name: "إيريني رضا عوض", class: "الثاني الإعدادي", level: "الرابع", hymns: "71", rituals: "72", coptic: "72", memorization: "19", behavior: "40", total: "274", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21221", name: "سارة عيد ثابت", class: "الثاني الإعدادي", level: "الرابع", hymns: "64", rituals: "56", coptic: "66", memorization: "19", behavior: "26.5", total: "231.5", percentage: "77%", evaluation: "جيد" },
-            { code: "21222", name: "عبد المسيح ماجد مقار", class: "الثاني الإعدادي", level: "الرابع", hymns: "80", rituals: "80", coptic: "80", memorization: "20", behavior: "40", total: "300", percentage: "100%", evaluation: "إمتياز" },
-            { code: "21223", name: "سوسنة عازر خليل", class: "الثاني الإعدادي", level: "الرابع", hymns: "79", rituals: "68", coptic: "72", memorization: "20", behavior: "40", total: "279", percentage: "93%", evaluation: "إمتياز" },
-            { code: "21224", name: "فادية كامل حنس", class: "الثاني الإعدادي", level: "الرابع", hymns: "34", rituals: "36", coptic: "40", memorization: "10", behavior: "40", total: "160", percentage: "53%", evaluation: "ضعيف" },
-            { code: "21225", name: "موسي مدحت ناجح", class: "الثاني الإعدادي", level: "الرابع", hymns: "64", rituals: "68", coptic: "76", memorization: "20", behavior: "37.5", total: "265.5", percentage: "89%", evaluation: "جيد جداً" },
-            { code: "21226", name: "إيريني عبد الشهيد شحاته", class: "الثاني الإعدادي", level: "الرابع", hymns: "0", rituals: "0", coptic: "0", memorization: "0", behavior: "23.5", total: "23.5", percentage: "8%", evaluation: "ضعيف" },
-            { code: "21227", name: "أنطون أمير عزت", class: "الثاني الإعدادي", level: "الرابع", hymns: "55", rituals: "56", coptic: "50", memorization: "20", behavior: "32", total: "213", percentage: "71%", evaluation: "جيد" },
-            { code: "21228", name: "جوليانا معوض مصباح", class: "الثالث الإعدادي", level: "الخامس", hymns: "59", rituals: "68", coptic: "76", memorization: "16", behavior: "35.5", total: "254.5", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "21229", name: "نوفير اشرف ملاك", class: "الثالث الإعدادي", level: "الخامس", hymns: "70", rituals: "56", coptic: "72", memorization: "16", behavior: "36", total: "250", percentage: "83%", evaluation: "جيد جداً" },
-            { code: "21230", name: "ايريني عادل مليكه", class: "الثالث الإعدادي", level: "الخامس", hymns: "59", rituals: "60", coptic: "52", memorization: "19", behavior: "31.5", total: "221.5", percentage: "74%", evaluation: "جيد" },
-            { code: "21231", name: "أنجيلوس موريس يعقوب", class: "الثالث الإعدادي", level: "الخامس", hymns: "75", rituals: "72", coptic: "72", memorization: "20", behavior: "34.5", total: "273.5", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21232", name: "بيشوي عادل إليشع", class: "الثالث الإعدادي", level: "الخامس", hymns: "75", rituals: "68", coptic: "72", memorization: "19", behavior: "37", total: "271", percentage: "90%", evaluation: "إمتياز" },
-            { code: "21233", name: "صموئيل مجدي يوسف", class: "الثالث الإعدادي", level: "الخامس", hymns: "75", rituals: "72", coptic: "72", memorization: "19", behavior: "38.5", total: "276.5", percentage: "92%", evaluation: "إمتياز" },
-            { code: "21235", name: "ماركو عازر نصحي", class: "الثالث الإعدادي", level: "الخامس", hymns: "65", rituals: "64", coptic: "72", memorization: "19", behavior: "26", total: "246", percentage: "82%", evaluation: "جيد جداً" },
-            { code: "21236", name: "كيرلس عماد يوسف", class: "الثالث الإعدادي", level: "الخامس", hymns: "55", rituals: "68", coptic: "72", memorization: "20", behavior: "26", total: "241", percentage: "80%", evaluation: "جيد جداً" },
-            { code: "21237", name: "ملاك هاني لويس", class: "الأول الثانوي", level: "الخامس", hymns: "50", rituals: "64", coptic: "70", memorization: "18", behavior: "30", total: "232", percentage: "77%", evaluation: "جيد" },
-            { code: "21238", name: "انطون صموئيل طلعت", class: "الأول الثانوي", level: "الخامس", hymns: "61", rituals: "72", coptic: "72", memorization: "14", behavior: "36", total: "255", percentage: "85%", evaluation: "جيد جداً" },
-            { code: "21239", name: "سيلفيا باسم نادي", class: "الأول الثانوي", level: "السادس", hymns: "76", rituals: "76", coptic: "80", memorization: "18", behavior: "40", total: "290", percentage: "97%", evaluation: "إمتياز" },
-            { code: "21240", name: "مهرائيل خليل عيد", class: "الأول الثانوي", level: "الخامس", hymns: "59", rituals: "68", coptic: "68", memorization: "16", behavior: "25", total: "236", percentage: "79%", evaluation: "جيد" },
-            { code: "21241", name: "ناردین عزت عید", class: "الأول الثانوي", level: "الخامس", hymns: "59", rituals: "54", coptic: "62", memorization: "17", behavior: "22.5", total: "214.5", percentage: "72%", evaluation: "جيد" },
-            { code: "21242", name: "جرجس مینا مکرم", class: "الأول الثانوي", level: "السادس", hymns: "76", rituals: "76", coptic: "72", memorization: "19", behavior: "40", total: "283", percentage: "94%", evaluation: "إمتياز" },
-            { code: "21243", name: "ميرنا عازر خليل", class: "الأول الثانوي", level: "السادس", hymns: "76", rituals: "58", coptic: "72", memorization: "17", behavior: "37.5", total: "260.5", percentage: "87%", evaluation: "جيد جداً" },
-            { code: "21244", name: "يسي رأفت صدقي", class: "الأول الثانوي", level: "الخامس", hymns: "47", rituals: "44", coptic: "64", memorization: "11", behavior: "29.5", total: "195.5", percentage: "65%", evaluation: "مقبول" },
-            { code: "21245", name: "مرقس رأفت نشأت", class: "الأول الثانوي", level: "السادس", hymns: "78", rituals: "76", coptic: "80", memorization: "13", behavior: "40", total: "287", percentage: "96%", evaluation: "إمتياز" },
-            { code: "21246", name: "يوستينا حليم ملاك", class: "الأول الثانوي", level: "السادس", hymns: "76", rituals: "67", coptic: "76", memorization: "15", behavior: "40", total: "274", percentage: "91%", evaluation: "إمتياز" },
-            { code: "21248", name: "مادونا مينا حبيب", class: "الأول الثانوي", level: "الخامس", hymns: "0", rituals: "0", coptic: "0", memorization: "0", behavior: "23.5", total: "23.5", percentage: "8%", evaluation: "ضعيف" },
-            { code: "21252", name: "كيرلس رضا صلاح", class: "الأول الثانوي", level: "الخامس", hymns: "55", rituals: "60", coptic: "60", memorization: "18", behavior: "21", total: "214", percentage: "71%", evaluation: "جيد" },
-            { code: "21253", name: "ندي رأفت سمير", class: "الأول الثانوي", level: "الخامس", hymns: "25", rituals: "40", coptic: "40", memorization: "9", behavior: "21", total: "135", percentage: "45%", evaluation: "ضعيف" },
-            { code: "21254", name: "ماركو عماد يوسف", class: "الثاني الثانوي", level: "السادس", hymns: "78", rituals: "76", coptic: "80", memorization: "18", behavior: "40", total: "292", percentage: "97%", evaluation: "إمتياز" },
-            { code: "21255", name: "ميرنا مينا صفوت", class: "الثاني الثانوي", level: "الخامس", hymns: "25", rituals: "36", coptic: "40", memorization: "8", behavior: "21.5", total: "130.5", percentage: "44%", evaluation: "ضعيف" },
-            { code: "21256", name: "میرنا شنوده خلیل", class: "الثاني الثانوي", level: "السادس", hymns: "78", rituals: "76", coptic: "76", memorization: "20", behavior: "40", total: "290", percentage: "97%", evaluation: "إمتياز" },
-            { code: "21257", name: "مهرائيل ملاك خليل", class: "الثاني الثانوي", level: "السادس", hymns: "76", rituals: "61", coptic: "76", memorization: "11", behavior: "37.5", total: "261.5", percentage: "87%", evaluation: "جيد جداً" },
-            { code: "21258", name: "فيرونيا مجلي اسحق", class: "الثاني الثانوي", level: "الخامس", hymns: "30", rituals: "36", coptic: "18", memorization: "10", behavior: "29", total: "123", percentage: "41%", evaluation: "ضعيف" },
-            { code: "21259", name: "ماري مجدي يوسف", class: "الثاني الثانوي", level: "السادس", hymns: "79", rituals: "76", coptic: "80", memorization: "20", behavior: "40", total: "295", percentage: "98%", evaluation: "إمتياز" },
-            { code: "21260", name: "باتريز أمين سيف", class: "الثاني الثانوي", level: "السادس", hymns: "76", rituals: "78", coptic: "80", memorization: "16", behavior: "40", total: "290", percentage: "97%", evaluation: "إمتياز" },
-            { code: "21261", name: "فيولا صبحي مكرم", class: "الثاني الثانوي", level: "الخامس", hymns: "56", rituals: "60", coptic: "64", memorization: "17", behavior: "21", total: "218", percentage: "73%", evaluation: "جيد" },
-            { code: "21262", name: "كيرلس حنا محروس", class: "الثاني الثانوي", level: "الخامس", hymns: "61", rituals: "72", coptic: "58", memorization: "18", behavior: "32.5", total: "241.5", percentage: "81%", evaluation: "جيد جداً" },
-            { code: "21263", name: "كريستين وجيه شارود", class: "الثاني الثانوي", level: "السادس", hymns: "79", rituals: "67", coptic: "72", memorization: "16", behavior: "35", total: "269", percentage: "90%", evaluation: "جيد جداً" },
-            { code: "21264", name: "کارولین میلاد عزت", class: "الثاني الثانوي", level: "السادس", hymns: "79", rituals: "80", coptic: "80", memorization: "20", behavior: "40", total: "299", percentage: "100%", evaluation: "إمتياز" },
-            { code: "21265", name: "مریم بهجت عبد الساتر", class: "الثالث الثانوي", level: "الخامس", hymns: "74", rituals: "78", coptic: "64", memorization: "20", behavior: "36", total: "272", percentage: "91%", evaluation: "إمتياز" }
-        ];
-
-        const maxGrades = { memorization: 20, rituals: 80, hymns: 80, coptic: 80, behavior: 40 };
-
-        function formatGradeHistory(valStr, maxVal) {
-            const val = parseFloat(valStr);
-            const isFail = val < (maxVal / 2);
-            const td = document.createElement('td');
-            td.innerText = valStr;
-            if (isFail) td.className = 'fail-grade';
-            return td;
-        }
-
-        function searchResultHistory() {
-            const selectedYear = document.getElementById('academicYear').value;
-            const resultCard = document.querySelector('#page-results-hub #resultCard');
-            const errorMsg = document.querySelector('#page-results-hub #errorMsg');
-
-            if (selectedYear !== "2021-2022") {
-                resultCard.style.display = 'none';
-                errorMsg.style.display = 'block';
-                errorMsg.innerText = "سيتم رفع النتيجة علي الموقع في أقرب وقت";
-                return;
-            }
-
-            const query = document.getElementById('studentCode').value.trim().toLowerCase();
-            if (!query) { alert('الرجاء إدخال كود الطالب أو جزء من اسمه.'); return; }
-
-            const student = studentsDatabase.find(s => s.code.toLowerCase() === query || s.name.toLowerCase().includes(query));
-            if (student) {
-                errorMsg.innerText = "عذراً، لم يتم العثور على طالب بهذا الكود أو الاسم. تأكد من البيانات وحاول مرة أخرى.";
-                document.getElementById('resName').innerText = student.name;
-                document.getElementById('resClass').innerText = student.class;
-                document.getElementById('resLevel').innerText = student.level;
-                document.getElementById('gradeMemorization').replaceWith(formatGradeHistory(student.memorization, maxGrades.memorization));
-                document.getElementById('gradeRituals').replaceWith(formatGradeHistory(student.rituals, maxGrades.rituals));
-                document.getElementById('gradeHymns').replaceWith(formatGradeHistory(student.hymns, maxGrades.hymns));
-                document.getElementById('gradeCoptic').replaceWith(formatGradeHistory(student.coptic, maxGrades.coptic));
-                document.getElementById('gradeBehavior').replaceWith(formatGradeHistory(student.behavior, maxGrades.behavior));
-                
-                document.querySelector('#page-results-hub .grades-table tbody tr:nth-child(1) td:nth-child(3)').id = 'gradeMemorization';
-                document.querySelector('#page-results-hub .grades-table tbody tr:nth-child(2) td:nth-child(3)').id = 'gradeRituals';
-                document.querySelector('#page-results-hub .grades-table tbody tr:nth-child(3) td:nth-child(3)').id = 'gradeHymns';
-                document.querySelector('#page-results-hub .grades-table tbody tr:nth-child(4) td:nth-child(3)').id = 'gradeCoptic';
-                document.querySelector('#page-results-hub .grades-table tbody tr:nth-child(5) td:nth-child(3)').id = 'gradeBehavior';
-
-                document.getElementById('resTotal').innerText = student.total;
-                document.getElementById('resPercentage').innerText = student.percentage;
-                document.getElementById('resEvaluation').innerText = student.evaluation;
-                resultCard.style.display = 'block';
-                errorMsg.style.display = 'none';
-            } else {
-                resultCard.style.display = 'none';
-                errorMsg.innerText = "عذراً، لم يتم العثور على طالب بهذا الكود أو الاسم. تأكد من البيانات وحاول مرة أخرى.";
-                errorMsg.style.display = 'block';
-            }
-        }
-
-        const studentCodeInput = document.getElementById('studentCode');
-        if (studentCodeInput) {
-            studentCodeInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') searchResultHistory();
-            });
         }
     </script>
 </body>
