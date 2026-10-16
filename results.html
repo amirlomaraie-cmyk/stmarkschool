@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعلام نتائج الطلاب - مدرسة التسبيح</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coptic: {
+                            gold: '#D4AF37',
+                            darkGold: '#AA7C11',
+                            navy: '#0F172A',
+                            burgundy: '#800020',
+                            cream: '#FBF9F5'
+                        }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #FBF9F5; text-align: center; }
+    </style>
+    <!-- ربط ملفات بيانات السنوات المستقلة -->
+    <script src="results-2021-2022.js"></script>
+    <script src="results-2022-2023.js"></script>
+    <script src="results-2023-2024.js"></script>
+    <script src="results-2024-2025.js"></script>
+    <script src="results-2025-2026.js"></script>
+</head>
+<body class="bg-coptic-cream text-slate-800 font-cairo antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-coptic-navy text-white shadow-xl sticky top-0 z-50 border-b-2 border-coptic-gold py-4 px-6 flex justify-between items-center">
+        <h1 class="text-xl font-extrabold text-coptic-gold">مدرسة التسبيح - نظام نتائج الطلاب</h1>
+        <a href="index.html" class="bg-coptic-gold text-coptic-navy font-bold px-4 py-2 rounded-xl text-sm hover:bg-amber-400 transition flex items-center gap-2">
+            <i class="fa-solid fa-house"></i> العودة للموقع الرئيسي
+        </a>
+    </header>
+
+    <!-- Main Results Section -->
+    <main class="flex-grow max-w-4xl mx-auto px-4 py-12 w-full text-right">
+        <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-200 space-y-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-coptic-navy text-coptic-gold rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-md border border-coptic-gold/30">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-coptic-navy mb-2">استعلام نتائج الطلاب</h3>
+                <p class="text-slate-600">اختر العام الدراسي وأدخل كود الطالب أو اسمه لعرض النتيجة</p>
+            </div>
+
+            <!-- نموذج البحث -->
+            <div class="bg-slate-50 border border-slate-200 p-6 md:p-8 rounded-2xl space-y-6">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">اختر العام الدراسي:</label>
+                    <select id="result-year" class="w-full p-3.5 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy">
+                        <option value="2025-2026">نتيجة العام الدراسي 2025-2026م</option>
+                        <option value="2024-2025">نتيجة العام الدراسي 2024-2025م</option>
+                        <option value="2023-2024">نتيجة العام الدراسي 2023-2024م</option>
+                        <option value="2022-2023">نتيجة العام الدراسي 2022-2023م</option>
+                        <option value="2021-2022">نتيجة العام الدراسي 2021-2022م</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-2">بحث برقم كود الطالب أو اسم الطالب:</label>
+                    <input type="text" id="student-query" placeholder="اكتب كود الطالب أو الاسم هنا (مثال: 2501 أو مكاري)..." class="w-full p-3.5 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy">
+                </div>
+
+                <button onclick="searchStudentResult()" class="w-full bg-coptic-navy text-coptic-gold font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-md border border-coptic-gold/40 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>عرض النتيجة</span>
+                </button>
+            </div>
+
+            <!-- صندوق عرض النتيجة -->
+            <div id="result-display-box" class="hidden bg-sky-50 border border-sky-200 p-6 md:p-8 rounded-2xl text-right space-y-6">
+                <div id="result-content" class="space-y-6">
+                    <!-- بيانات النتيجة والجدول -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-coptic-navy text-slate-200 py-6 px-4 border-t-2 border-coptic-gold text-center">
+        <p class="text-xs text-slate-400">كنيسة الشهيد العظيم مارمرقس الرسول ببني صامت © 2026 - مدرسة التسبيح</p>
+    </footer>
+
+    <script>
+        // دالة مساعدة لتنسيق عرض الدرجة ووضع دائرة حمراء إذا كانت أقل من نصف الدرجة العظمى
+        function formatGrade(scoreStr, maxScore) {
+            const score = parseFloat(scoreStr);
+            if (isNaN(score)) return `<strong class="text-coptic-navy font-bold">${scoreStr}</strong>`;
+            const halfMax = maxScore / 2;
+            if (score < halfMax) {
+                return `<span class="inline-flex items-center justify-center w-10 h-10 rounded-full border-2 border-rose-500 text-rose-600 font-bold bg-rose-50 shadow-sm">${scoreStr}</span>`;
+            }
+            return `<strong class="text-coptic-navy font-bold">${scoreStr}</strong>`;
+        }
+
+        function searchStudentResult() {
+            const selectedYear = document.getElementById('result-year').value;
+            const query = document.getElementById('student-query').value.trim().toLowerCase();
+            const box = document.getElementById('result-display-box');
+            const content = document.getElementById('result-content');
+
+            if (!query) {
+                alert('الرجاء إدخال كود الطالب أو اسم الطالب للبحث.');
+                return;
+            }
+
+            let dataset = [];
+
+            if (selectedYear === "2021-2022") {
+                dataset = results2021_2022;
+            } else if (selectedYear === "2022-2023") {
+                dataset = results2022_2023;
+            } else if (selectedYear === "2023-2024") {
+                dataset = results2023_2024;
+            } else if (selectedYear === "2024-2025") {
+                dataset = results2024_2025;
+            } else if (selectedYear === "2025-2026") {
+                dataset = results2025_2026;
+            } else {
+                box.classList.remove('hidden');
+                content.innerHTML = `<p class="text-center text-slate-600">جاري البحث عن نتيجة الطالب للعام الدراسي <span class="text-coptic-navy font-bold">${selectedYear}م</span>...<br><span class="text-xs text-amber-600 font-bold mt-2 block">سيتم إتاحة كشوفات هذه السنة قريباً.</span></p>`;
+                return;
+            }
+
+            const foundStudent = dataset.find(s => 
+                s.code.toLowerCase() === query || s.name.toLowerCase().includes(query)
+            );
+
+            box.classList.remove('hidden');
+
+            if (foundStudent) {
+                if (selectedYear === "2021-2022") {
+                    content.innerHTML = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-5 rounded-2xl border border-sky-100 shadow-sm text-right">
+                            <div><span class="text-slate-500">اسم الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.name}</strong></div>
+                            <div><span class="text-slate-500">كود الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.code}</strong></div>
+                            <div><span class="text-slate-500">الصف الدراسي:</span> <strong class="text-slate-800">${foundStudent.grade}</strong></div>
+                            <div><span class="text-slate-500">المستوى:</span> <strong class="text-slate-800">${foundStudent.level}</strong></div>
+                        </div>
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+                            <table class="w-full text-right border-collapse">
+                                <thead>
+                                    <tr class="bg-coptic-navy text-white text-sm md:text-base">
+                                        <th class="p-3.5 pr-6">المادة الدراسية</th>
+                                        <th class="p-3.5 text-center">الدرجة العظمى</th>
+                                        <th class="p-3.5 text-center">الدرجة الحاصل عليها</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700 font-semibold text-sm md:text-base">
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">المحفوظات</td><td class="p-3.5 text-center text-slate-500">20</td><td class="p-3.5 text-center">${formatGrade(foundStudent.mahfouzatan, 20)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الطقس الكنسي</td><td class="p-3.5 text-center text-slate-500">80</td><td class="p-3.5 text-center">${formatGrade(foundStudent.toqs, 80)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الألحان والتسبحة</td><td class="p-3.5 text-center text-slate-500">80</td><td class="p-3.5 text-center">${formatGrade(foundStudent.alhan, 80)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">اللغة القبطية</td><td class="p-3.5 text-center text-slate-500">80</td><td class="p-3.5 text-center">${formatGrade(foundStudent.qebty, 80)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الحضور والسلوك</td><td class="p-3.5 text-center text-slate-500">40</td><td class="p-3.5 text-center">${formatGrade(foundStudent.behavior, 40)}</td></tr>
+                                    <tr class="bg-amber-50/60 font-bold"><td class="p-3.5 pr-6 text-coptic-navy">المجموع الكلي</td><td class="p-3.5 text-center text-coptic-navy">300</td><td class="p-3.5 text-center text-coptic-navy text-lg">${foundStudent.total}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-coptic-navy text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center text-center gap-4 shadow-md">
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">النسبة المئوية</span><span class="text-xl font-extrabold text-white">${foundStudent.percentage}</span></div>
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">التقدير العام</span><span class="text-xl font-extrabold text-coptic-gold">${foundStudent.rating}</span></div>
+                        </div>
+                    `;
+                } else if (selectedYear === "2022-2023" || selectedYear === "2023-2024") {
+                    content.innerHTML = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-5 rounded-2xl border border-sky-100 shadow-sm text-right">
+                            <div><span class="text-slate-500">اسم الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.name}</strong></div>
+                            <div><span class="text-slate-500">كود الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.code}</strong></div>
+                            <div><span class="text-slate-500">الصف الدراسي:</span> <strong class="text-slate-800">${foundStudent.grade}</strong></div>
+                            <div><span class="text-slate-500">المستوى:</span> <strong class="text-slate-800">${foundStudent.level}</strong></div>
+                        </div>
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+                            <table class="w-full text-right border-collapse">
+                                <thead>
+                                    <tr class="bg-coptic-navy text-white text-sm md:text-base">
+                                        <th class="p-3.5 pr-6">المادة الدراسية</th>
+                                        <th class="p-3.5 text-center">الدرجة العظمى</th>
+                                        <th class="p-3.5 text-center">الدرجة الحاصل عليها</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700 font-semibold text-sm md:text-base">
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الألحان</td><td class="p-3.5 text-center text-slate-500">25</td><td class="p-3.5 text-center">${formatGrade(foundStudent.alhan, 25)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الكتاب المقدس</td><td class="p-3.5 text-center text-slate-500">25</td><td class="p-3.5 text-center">${formatGrade(foundStudent.mahfouzatan, 25)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">اللغة القبطية</td><td class="p-3.5 text-center text-slate-500">20</td><td class="p-3.5 text-center">${formatGrade(foundStudent.qebty, 20)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الطقس الكنسي</td><td class="p-3.5 text-center text-slate-500">20</td><td class="p-3.5 text-center">${formatGrade(foundStudent.toqs, 20)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الحضور والسلوك</td><td class="p-3.5 text-center text-slate-500">30</td><td class="p-3.5 text-center">${formatGrade(foundStudent.behavior, 30)}</td></tr>
+                                    <tr class="bg-amber-50/60 font-bold"><td class="p-3.5 pr-6 text-coptic-navy">المجموع الكلي</td><td class="p-3.5 text-center text-coptic-navy">120 (-20)</td><td class="p-3.5 text-center text-coptic-navy text-lg">${foundStudent.total}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-coptic-navy text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center text-center gap-4 shadow-md">
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">النسبة المئوية (100%)</span><span class="text-xl font-extrabold text-white">${foundStudent.percentage}</span></div>
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">التقدير العام</span><span class="text-xl font-extrabold text-coptic-gold">${foundStudent.rating}</span></div>
+                        </div>
+                    `;
+                } else if (selectedYear === "2024-2025") {
+                    content.innerHTML = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-5 rounded-2xl border border-sky-100 shadow-sm text-right">
+                            <div><span class="text-slate-500">اسم الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.name}</strong></div>
+                            <div><span class="text-slate-500">كود الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.code}</strong></div>
+                            <div><span class="text-slate-500">الصف الدراسي:</span> <strong class="text-slate-800">${foundStudent.grade}</strong></div>
+                            <div><span class="text-slate-500">المستوى:</span> <strong class="text-slate-800">${foundStudent.level}</strong></div>
+                        </div>
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+                            <table class="w-full text-right border-collapse">
+                                <thead>
+                                    <tr class="bg-coptic-navy text-white text-sm md:text-base">
+                                        <th class="p-3.5 pr-6">المادة الدراسية</th>
+                                        <th class="p-3.5 text-center">الدرجة العظمى</th>
+                                        <th class="p-3.5 text-center">الدرجة الحاصل عليها</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700 font-semibold text-sm md:text-base">
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الألحان</td><td class="p-3.5 text-center text-slate-500">50</td><td class="p-3.5 text-center">${formatGrade(foundStudent.alhan, 50)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الكتاب المقدس</td><td class="p-3.5 text-center text-slate-500">50</td><td class="p-3.5 text-center">${formatGrade(foundStudent.mahfouzatan, 50)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">اللغة القبطية</td><td class="p-3.5 text-center text-slate-500">20</td><td class="p-3.5 text-center">${formatGrade(foundStudent.qebty, 20)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الطقس الكنسي</td><td class="p-3.5 text-center text-slate-500">20</td><td class="p-3.5 text-center">${formatGrade(foundStudent.toqs, 20)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الحضور والسلوك</td><td class="p-3.5 text-center text-slate-500">60</td><td class="p-3.5 text-center">${formatGrade(foundStudent.behavior, 60)}</td></tr>
+                                    <tr class="bg-amber-50/60 font-bold"><td class="p-3.5 pr-6 text-coptic-navy">المجموع الكلي</td><td class="p-3.5 text-center text-coptic-navy">200</td><td class="p-3.5 text-center text-coptic-navy text-lg">${foundStudent.total}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-coptic-navy text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center text-center gap-4 shadow-md">
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">النسبة المئوية (100%)</span><span class="text-xl font-extrabold text-white">${foundStudent.percentage}%</span></div>
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">التقدير العام</span><span class="text-xl font-extrabold text-coptic-gold">${foundStudent.rating}</span></div>
+                        </div>
+                    `;
+                } else {
+                    // جدول نتائج 2025-2026م المتوافق بدقة مع الطلب
+                    content.innerHTML = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-5 rounded-2xl border border-sky-100 shadow-sm text-right">
+                            <div><span class="text-slate-500">اسم الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.name}</strong></div>
+                            <div><span class="text-slate-500">كود الطالب:</span> <strong class="text-coptic-navy text-lg">${foundStudent.code}</strong></div>
+                            <div><span class="text-slate-500">الصف الدراسي:</span> <strong class="text-slate-800">${foundStudent.grade}</strong></div>
+                            <div><span class="text-slate-500">المستوى:</span> <strong class="text-slate-800">${foundStudent.level}</strong></div>
+                        </div>
+
+                        <!-- جدول الدرجات 2025-2026 -->
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+                            <table class="w-full text-right border-collapse">
+                                <thead>
+                                    <tr class="bg-coptic-navy text-white text-sm md:text-base">
+                                        <th class="p-3.5 pr-6">المادة الدراسية</th>
+                                        <th class="p-3.5 text-center">الدرجة العظمى</th>
+                                        <th class="p-3.5 text-center">الدرجة الحاصل عليها</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700 font-semibold text-sm md:text-base">
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الكتاب المقدس</td><td class="p-3.5 text-center text-slate-500">60</td><td class="p-3.5 text-center">${formatGrade(foundStudent.mahfouzatan, 60)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الألحان</td><td class="p-3.5 text-center text-slate-500">40</td><td class="p-3.5 text-center">${formatGrade(foundStudent.alhan, 40)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الطقس الكنسي</td><td class="p-3.5 text-center text-slate-500">40</td><td class="p-3.5 text-center">${formatGrade(foundStudent.toqs, 40)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">اللغة القبطية</td><td class="p-3.5 text-center text-slate-500">5</td><td class="p-3.5 text-center">${formatGrade(foundStudent.qebty, 5)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الحضور والسلوك</td><td class="p-3.5 text-center text-slate-500">60</td><td class="p-3.5 text-center">${formatGrade(foundStudent.behavior, 60)}</td></tr>
+                                    <tr class="hover:bg-slate-50 transition"><td class="p-3.5 pr-6">الدرجات الإضافية</td><td class="p-3.5 text-center text-slate-500">(3)</td><td class="p-3.5 text-center"><strong class="text-coptic-navy font-bold">${foundStudent.bonus.includes('(') ? foundStudent.bonus : '(' + foundStudent.bonus + ')'}</strong></td></tr>
+                                    <tr class="bg-amber-50/60 font-bold"><td class="p-3.5 pr-6 text-coptic-navy">المجموع الكلي</td><td class="p-3.5 text-center text-coptic-navy">200</td><td class="p-3.5 text-center text-coptic-navy text-lg">${foundStudent.total}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-coptic-navy text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center text-center gap-4 shadow-md">
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">النسبة المئوية (100%)</span><span class="text-xl font-extrabold text-white">${foundStudent.percentage}%</span></div>
+                            <div class="bg-slate-800/60 px-6 py-3 rounded-xl border border-coptic-gold/30 w-full sm:w-auto"><span class="text-xs text-amber-200 block mb-1">التقدير العام</span><span class="text-xl font-extrabold text-coptic-gold">${foundStudent.rating}</span></div>
+                        </div>
+                    `;
+                }
+            } else {
+                content.innerHTML = `<div class="text-center py-8 text-rose-600 font-bold bg-white rounded-2xl border border-rose-100 shadow-sm"><i class="fa-solid fa-triangle-exclamation mb-2 text-3xl block"></i>عذراً، لم يتم العثور على طالب بهذا الكود أو الاسم في العام الدراسي ${selectedYear}م. يرجى التأكد من صحة البيانات المدخلة.</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
