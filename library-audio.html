@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المكتبة الصوتية - مدرسة التسبيح ببني صامت</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Noto+Serif+Coptic:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coptic: {
+                            gold: '#D4AF37',
+                            darkGold: '#AA7C11',
+                            navy: '#0F172A',
+                            cream: '#FBF9F5'
+                        }
+                    },
+                    fontFamily: { 
+                        cairo: ['Cairo', 'sans-serif'],
+                        copticFont: ['Antinoou', 'Noto Serif Coptic', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #FBF9F5; text-align: center; }
+        
+        /* حماية الصوت ومنع التحميل المباشر */
+        audio::-internal-media-controls-download-button { display:none !important; }
+        audio::-webkit-media-controls-enclosure { overflow:hidden; }
+        audio::-webkit-media-controls-panel { width: calc(100% + 30px); }
+
+        .coptic-text { 
+            font-family: 'Antinoou', 'Noto Serif Coptic', serif; 
+            letter-spacing: 0.5px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* تنسيق شرطة الاختصار القبطية (شرطة واحدة متصلة فوق الاختصار) */
+        .coptic-abbr {
+            text-decoration: overline;
+            text-decoration-thickness: 1.5px;
+        }
+
+        /* ضبط الجينكم فوق الحرف تماماً مع خفضها قليلاً للأسفل */
+        .jinkim-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .jinkim-mark {
+            position: absolute;
+            left: 50%;
+            top: 0.18em;
+            transform: translateX(-50%);
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        /* تصميم الجدول بإطارات حمراء */
+        .quarter-box {
+            border: 2px solid #DC2626;
+            margin-bottom: -2px;
+            background-color: #FFFFFF;
+        }
+
+        .hymn-cell {
+            border-left: 2px solid #DC2626;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-height: 140px;
+        }
+
+        .hymn-cell:last-child {
+            border-left: none;
+        }
+
+        /* محاذاة وامتداد النص داخل الخلية */
+        .lyric-line {
+            text-align: justify;
+            text-align-last: justify;
+            width: 100%;
+            margin: 2px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="bg-coptic-cream text-slate-800 font-cairo antialiased min-h-screen flex flex-col justify-between" oncontextmenu="return false;">
+
+    <!-- Header / Navbar -->
+    <header class="bg-coptic-navy text-white shadow-xl py-4 px-6 flex justify-between items-center border-b-2 border-coptic-gold">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <div class="w-10 h-10 rounded-full bg-coptic-gold/20 flex items-center justify-center border border-coptic-gold">
+                <i class="fa-solid fa-cross text-coptic-gold text-xl"></i>
+            </div>
+            <h1 class="text-xl font-extrabold text-white">المكتبة الصوتية المرئية</h1>
+        </div>
+        <a href="index.html" class="bg-coptic-gold text-coptic-navy px-4 py-2 rounded-xl text-xs font-extrabold hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-house"></i>
+            <span>العودة للرئيسية</span>
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-10 flex-grow w-full text-right">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-coptic-navy mb-2">استمع وتابع كلمات الألحان</h2>
+            <p class="text-slate-600 text-sm">اختر الصف واللحن لمتابعة الكلمات المنسقة باللغة العربية والقبطية أثناء الاستماع</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- لوحة الخيارات الجانبية -->
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-slate-200 lg:col-span-1 space-y-5 h-fit">
+                <h3 class="font-extrabold text-lg text-coptic-navy border-b pb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-coptic-gold"></i> خيارات التصفح
+                </h3>
+
+                <!-- القائمة الأولى: اختر الصف الدراسي -->
+                <div>
+                    <label class="block font-bold text-slate-700 text-sm mb-2">إختر الصَّف الدراسي:</label>
+                    <select id="select-class" onchange="onClassChange()" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                        <option value="1">الصَّف الأول الإبتدائي</option>
+                        <option value="2">الصَّف الثاني الإبتدائي</option>
+                        <option value="3">الصَّف الثالث الإبتدائي</option>
+                        <option value="4">الصَّف الرابع الإبتدائي</option>
+                        <option value="5">الصَّف الخامس الإبتدائي</option>
+                        <option value="6">الصَّف السادس الإبتدائي</option>
+                        <option value="prep1">الصَّف الأول الإعدادي</option>
+                        <option value="prep2">الصَّف الثاني الإعدادي</option>
+                        <option value="prep3">الصَّف الثالث الإعدادي</option>
+                    </select>
+                </div>
+
+                <!-- القائمة الثانية: اختر اللحن -->
+                <div>
+                    <label class="block font-bold text-slate-700 text-sm mb-2">إختر اللحن:</label>
+                    <select id="select-hymn" onchange="loadHymnData()" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                    </select>
+                </div>
+
+                <!-- القائمة الثالثة: اختر المرتل -->
+                <div>
+                    <label class="block font-bold text-slate-700 text-sm mb-2">إختر المُرتل:</label>
+                    <select id="select-reciter" onchange="loadHymnData()" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl font-bold text-coptic-navy text-sm focus:outline-none focus:border-coptic-navy">
+                        <option value="reciter1">المُرتِّل عبد المسيح صليب لبيب</option>
+                        <option value="reciter2">المُرتِّل مينا واصف جرجس</option>
+                    </select>
+                </div>
+
+                <button onclick="playSelectedHymn()" class="w-full bg-coptic-navy text-coptic-gold font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-md border border-coptic-gold/40 flex items-center justify-center gap-2 text-sm mt-4">
+                    <i class="fa-solid fa-play"></i>
+                    <span>تشغيل اللحن والمتابعة</span>
+                </button>
+            </div>
+
+            <!-- مشغل الصوت وعرض الكلمات المنسقة -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-slate-200 lg:col-span-2 flex flex-col justify-between">
+                <div>
+                    <!-- هيدر عرض اللحن والمرتل -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 mb-4 gap-2">
+                        <div>
+                            <span id="active-class-tag" class="text-xs bg-amber-100 text-coptic-darkGold font-bold px-3 py-1 rounded-full">الصَّف الأول الإبتدائي</span>
+                            <h3 id="active-title" class="text-2xl font-extrabold text-coptic-navy mt-2">اختر اللحن</h3>
+                            <p id="active-reciter-name" class="text-xs text-coptic-darkGold font-bold mt-1">بصوت: المُرتِّل عبد المسيح صليب لبيب</p>
+                        </div>
+                        <div class="w-12 h-12 bg-coptic-navy text-coptic-gold rounded-2xl flex items-center justify-center text-xl shadow border border-coptic-gold/30">
+                            <i class="fa-solid fa-headphones"></i>
+                        </div>
+                    </div>
+
+                    <!-- أزرار اختيار اللغة بتصميم متميز -->
+                    <div class="bg-slate-100 p-3 rounded-2xl border border-slate-200 mb-4">
+                        <span class="block text-xs font-extrabold text-coptic-navy mb-2.5 text-center">عرض أسطر النصوص (اختر اللغات المطلوبة):</span>
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            
+                            <!-- زر اللغة العربية -->
+                            <button onclick="toggleSection('ar')" id="btn-toggle-ar" class="bg-white text-coptic-navy border-2 border-coptic-gold px-4 py-2 rounded-xl text-xs font-extrabold transition shadow flex items-center gap-2 hover:bg-amber-50">
+                                <i id="icon-ar" class="fa-solid fa-square-check text-base text-coptic-darkGold"></i>
+                                <span>اللغة العربية</span>
+                            </button>
+                            
+                            <!-- زر القبطي المعرب -->
+                            <button onclick="toggleSection('co-ar')" id="btn-toggle-co-ar" class="bg-white text-coptic-navy border-2 border-coptic-gold px-4 py-2 rounded-xl text-xs font-extrabold transition shadow flex items-center gap-2 hover:bg-amber-50">
+                                <i id="icon-co-ar" class="fa-solid fa-square-check text-base text-coptic-darkGold"></i>
+                                <span>القبطي المُعرَّب</span>
+                            </button>
+                            
+                            <!-- زر القبطي القبطي -->
+                            <button onclick="toggleSection('co')" id="btn-toggle-co" class="bg-white text-coptic-navy border-2 border-coptic-gold px-4 py-2 rounded-xl text-xs font-extrabold transition shadow flex items-center gap-2 hover:bg-amber-50">
+                                <i id="icon-co" class="fa-solid fa-square-check text-base text-coptic-darkGold"></i>
+                                <span>القبطي الأصلي</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- رؤوس الأعمدة المتغيرة ديناميكياً -->
+                    <div id="grid-header" class="grid grid-cols-3 text-center bg-red-600 text-white p-2 border-2 border-red-600 font-extrabold text-xs mb-1 transition-all">
+                        <div id="header-col-ar">العربي</div>
+                        <div id="header-col-co-ar">القبطي المُعرَّب</div>
+                        <div id="header-col-co">القبطي القبطي</div>
+                    </div>
+
+                    <!-- حاوية عرض الأرباع -->
+                    <div class="h-[400px] overflow-y-auto pr-1" id="lyrics-container">
+                        <!-- يتم حقن الأرباع بالجدول هنا برمجياً -->
+                    </div>
+                </div>
+
+                <!-- مشغل الصوت المحمي بدون زر تحميل -->
+                <div class="mt-6 bg-coptic-navy p-4 rounded-2xl border border-coptic-gold/40 shadow-md" id="audio-player-box">
+                    <audio id="audio-player" controls controlsList="nodownload" class="w-full focus:outline-none">
+                        متصفحك لا يدعم تشغيل الصوت.
+                    </audio>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-coptic-navy text-slate-200 py-6 border-t-2 border-coptic-gold text-center text-xs">
+        <p class="text-coptic-gold font-bold">كنيسة الشهيد العظيم مارمرقس الرسول ببني صامت</p>
+        <p class="text-slate-400 mt-1">جميع الحقوق محفوظة © 2026 - مدرسة التسبيح</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const activeSections = { ar: true, 'co-ar': true, co: true };
+
+        const classHymnsData = {
+            '1': [
+                { 
+                    id: '101', 
+                    title: 'لحن مرد الإنجيل السنوي في عشية وباكر', 
+                    reciterAudios: {
+                        'reciter1': 'https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/hymns-audio/1st%20Primary/Cantor%20abdelmaseh%20saleb/marenouwsht.mp3'
+                    },
+                    quarters: [
+                        {
+                            ar: ["فلنَسجُد لمُخلِّصنا:", "مُحِب البَشَر الصالِح:", "لأنَهُ تراءَف عَلينا:", "أتَى وخلَّصنا."],
+                            coAr: ["مارين أو أوشت إم بين سوتير:", "بي ماي رومي إن أغاثوس:", "جي إنثوف أف شينهيت خارون:", "أف إي أووه أف صوتي إممون."],
+                            co: ["ⲙⲁⲣⲉⲛⲟⲩⲱϣⲧ ⲙ̀ⲡⲉⲛⲥⲱⲧⲏⲣ:", "ⲡⲓⲙⲁⲓⲣⲱⲙⲓ ⲛ̀ⲁⲅⲁⲑⲟⲥ:", "ϫⲉ ⲛ̀ⲑⲟϥ ⲁϥϣⲉⲛϩⲏⲧ ϧⲁⲣⲟⲛ:", "ⲁϥⲓ̀ ⲟⲩⲟϩ ⲁϥⲥⲱϯ ⲙ̀ⲙⲟⲛ."]
+                        }
+                    ]
+                },
+                { 
+                    id: '102', 
+                    title: 'لحن أجيوس السنوي', 
+                    reciterAudios: {
+                        'reciter1': 'https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/hymns-audio/1st%20Primary/Cantor%20abdelmaseh%20saleb/agios.mp3'
+                    },
+                    quarters: [
+                        {
+                            ar: ["قُدوس الله،", "قُدوس القوي،", "قُدوس الحي الَّذي لا يَموت،", "الَّذي وُلد مِن العَذراء،", "إرحَمنا."],
+                            coAr: ["أجيوس أوثيؤس،", "أجيوس إس شيروس،", "أجيوس أثاناطوس،", "أو إك بارثينو جين نيتيس،", "إليسون إيماس ."],
+                            co: ["Ⲁⲅⲓⲟⲥ ⲟ Ⲑⲉⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲓⲥⲭⲩⲣⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲁⲑⲁⲛⲁⲧⲟⲥ:", "Ⲟ ⲉⲕ Ⲡⲁⲣⲑⲉⲛⲟⲩ ⲅⲉⲛⲛⲏⲑⲏⲥ:", "Ⲉⲗⲉⲏⲥⲟⲛ ⲏⲙⲁⲥ."]
+                        },
+                        {
+                            ar: ["قُدوس الله،", "قُدوس القَوي،", "قُدوس الحي الَّذي لا يَموت،", "الَّذي صُلِبَ عَنَّا،", "إرحَمنا."],
+                            coAr: ["أجيوس أوثيؤس،", "أجيوس إس شيروس،", "أجيوس أثاناطوس،", "أو إسطافرو تيس ديماس،", "إليسون إيماس ."],
+                            co: ["Ⲁⲅⲓⲟⲥ ⲟ Ⲑⲉⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲓⲥⲭⲩⲣⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲁⲑⲁⲛⲁⲧⲟⲥ:", "Ⲟ ⲥⲧⲁⲩⲣⲱⲑⲉⲓⲥ ⲇⲓⲁ ϩⲙⲁⲥ:", "Ⲉⲗⲉⲏⲥⲟⲛ ⲏⲙⲁⲥ."]
+                        },
+                        {
+                            ar: ["قُدوس الله،", "قُدوس القَوي،", "قُدوس الحي الَّذي لا يَموت،", "الَّذي قَامَ مِن الأموات", "وَصَعد إلى السَموات،", "إرحَمنا."],
+                            coAr: ["أجيوس أوثيؤس،", "أجيوس إس شيروس،", "أجيوس أثاناطوس،", "أو أناسطاص إيك طون نيكرون", "كى أنيلثون إس طوس أورانوس،", "إليسون إيماس ."],
+                            co: ["Ⲁⲅⲓⲟⲥ ⲟ Ⲑⲉⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲓⲥⲭⲩⲣⲟⲥ:", "Ⲁⲅⲓⲟⲥ Ⲁⲑⲁⲛⲁⲧⲟⲥ:", "Ⲟ ⲁⲛⲁⲥⲧⲁⲥ ⲉⲕ ⲧⲱⲛ ⲛⲉⲕⲣⲱⲛ", "ⲕⲉ ⲁⲛⲉⲗⲑⲱⲛ ⲓⲥ ⲧⲟⲩⲥ ⲟⲩⲣⲁⲛⲟⲩⲥ:", "Ⲉⲗⲉⲏⲥⲟⲛ ⲏⲙⲁⲥ."]
+                        },
+                        {
+                            ar: ["المَجد للآب والإبن", "والرُوح القُدُس،", "الآن وكُل أوان وإلى", "دَهر الدُّهور.", "آمين. أيُّها الثَالوث", "القُدوس، إرحَمنا."],
+                            coAr: ["ذوكساباتري كـي إيــو", "كــي أجيــو بنيفمـاتي،", "كى نين كى أ إى كي إسطوص", "إى أوناص طون إى أونون.", "أميــن. أجيا إتريــاس،", "إليسون إيماس ."],
+                            co: ["Ⲇⲟⲝⲁ Ⲡⲁⲧⲣⲓ ⲕⲉ Ⲩⲓⲱ ⲕⲉ", "Ⲁⲅⲓⲱ Ⲡⲛⲉⲩⲙⲁⲧⲓ:", "Ⲕⲉ ⲛⲩⲛ ⲕⲉ ⲁⲓ ⲕⲉ ⲓⲥ ⲧⲟⲩⲥ", "ⲉⲱⲛⲁⲥ ⲧⲱⲛ ⲉⲱⲛⲱⲛ.", "Ⲁⲙⲏⲛ. Ⲁⲅⲓⲁ Ⲧⲣⲓⲁⲥ:", "Ⲉⲗⲉⲏⲥⲟⲛ ⲏⲙⲁⲥ."]
+                        }
+                    ]
+                }
+            ],
+            'prep3': [
+                { 
+                    id: 'prep301', 
+                    title: 'الأسبسمس الواطس السنوي "أيها الرَّب إله القوَّات..."', 
+                    reciterAudios: {
+                        'reciter1': 'https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/hymns-audio/3rd%20Preparatory/Cantor%20abdelmaseh%20saleb/ayoha%20alrab.mp4'
+                    },
+                    quarters: [
+                        {
+                            ar: [
+                                "أَيُّهَا اَلرَّبُّ إِلَهَ اَلْقُوَّاتِ،",
+                                "أَرجِع وَاطَّلِع",
+                                "مِنْ اَلسَّمَاءِ، وَأُنظُر وَتَعَهَّد هَذِهِ",
+                                "اَلْكَرْمَةِ، أَصْلِحهَا وَثَبِّتهَا هَذِهِ اَلَّتِي غَرَسَتْهَا يَمِينكَ.",
+                                "هَلِّلويا هَلِّلويا هَلِّلويا."
+                            ],
+                            coAr: [
+                                "إبشويس إفنوتي إنتي نيجوم: كوتك أووه جوشت إيفول",
+                                "خين إتفي: أناف أووه",
+                                "جيم إب شيني إن طاي فو",
+                                "إن ألولي: سيب طوتس أووه سيم نيتس ثاي إيطاس تشوس",
+                                "إنجي تيك أوي نام.",
+                                "الليلويا الليلويا الليلويا."
+                            ],
+                            co: [
+                                "Ⲡ̀ϭⲟⲓⲥ   ̀Ⲫⲛⲟⲩϯ   ̀ⲛⲧⲉ   ⲛⲓϫⲟⲙ:   ⲕⲟⲧⲕ   ⲟⲩⲟϩ   ϫⲟⲩϣⲧ   ̀ⲉⲃⲟⲗ   ϧⲉⲛ   ̀ⲧⲫⲉ:   ̀ⲁⲛⲁⲩ   ⲟⲩⲟϩ   ϫⲉⲙ̀ⲡϣⲓⲛⲓ   ̀ⲛⲧⲁⲓⲃⲱ   ̀ⲛ̀ⲁⲗⲟⲗⲓ:   ⲥⲉⲃⲧⲱⲧⲥ   ⲟⲩⲟϩ   ⲥⲉⲙⲛⲏⲧⲥ   ⲑⲁⲓ   ̀ⲉⲧⲁⲥϭⲟⲥ   ̀ⲛϫⲉ   ⲧⲉⲕⲟⲩ̀ⲓⲛⲁⲙ.",
+                                "Ⲁⲗⲗⲏⲗⲟⲩⲓⲁ   <span class=\"coptic-abbr\">ⲁⲗ</span>   <span class=\"coptic-abbr\">ⲁⲗ</span>."
+                            ]
+                        },
+                        {
+                            season: "من ١٢ بؤونه الى ٩ بابة",
+                            ar: ["بارِك مياهَ النَّهرِ."],
+                            coAr: ["إسمو إي ني مو أو إم إفيارو."],
+                            co: ["̀ⲥⲙⲟⲩ   ̀ⲉⲛⲓⲙⲱⲟⲩ   ̀ⲙ̀ⲫⲓⲁⲣⲟⲩ."]
+                        },
+                        {
+                            season: "من ١٠ بابة الى ١٠ طوبه",
+                            ar: ["بارِك الزُروعَ والعُشبِ."],
+                            coAr: ["إسمو إي ني يس تي نيم ني سيم."],
+                            co: ["̀ⲥⲙⲟⲩ   ̀ⲉⲛⲓⲥⲓϯ   ⲛⲉⲙ   ⲛⲓⲥⲓⲙ."]
+                        },
+                        {
+                            season: "من ١١ طوبه الى ١١ بؤونه",
+                            ar: ["بارِك أهويةَ السَماءِ."],
+                            coAr: ["إسمو إي ني أ إير إنتي إتفي."],
+                            co: ["̀ⲥⲙⲟⲩ   ̀ⲉⲛⲓ̀ⲁⲏⲣ   ̀ⲛⲧⲉ   ̀ⲧⲫⲉ."]
+                        },
+                        {
+                            ar: [
+                                "فَلتَكُن رَحمَتُكَ وَسَلامُكَ حِصنَاً لِشَعبِكَ.",
+                                "قُدوسٌ قُدوسٌ قُدوسٌ رَبُّ الصَّباؤت السَّماءُ والأرضُ مَملوءَتانِ مِن مَجدِكَ الأقدَس."
+                            ],
+                            coAr: [
+                                "ماري بيك ناي نيم تيك هيريني أوي أن سوفت أم بيك لاؤس.",
+                                "أجيوس أجيوس أجيوس كيريوس صاباؤت إبلي ريس أورانوس كي إي جي تيس أجياس سو ذوكسيس."
+                            ],
+                            co: [
+                                "Ⲙⲁⲣⲉ   ⲡⲉⲕⲛⲁⲓ   ⲛⲉⲙ   ⲧⲉⲕϩⲓⲣⲏⲛⲏ   ⲟⲓ   ̀ⲛⲥⲟⲃⲧ   ̀ⲙⲡⲉⲕⲗⲁⲟⲥ.",
+                                "Ⲁ̀ⲅⲓⲟⲥ   ⲁ̀ⲅⲓⲟⲥ   ⲁ̀ⲅⲓⲟⲥ:   Ⲕⲩⲣⲓⲟⲥ   ⲥⲁⲃⲁⲱⲑ:   ⲡ̀ⲗⲏⲣⲏⲥ   ⲟ̀   ⲟⲩⲣⲁⲛⲟⲥ   ⲕⲉ   ⲏ̀   ⲅⲏ:   ⲧⲏⲥ   ⲁ̀ⲅⲓⲁⲥ   ⲥⲟⲩ   ⲇⲟⲝⲏⲥ."
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        function onClassChange() {
+            const classVal = document.getElementById('select-class').value;
+            const hymnSelect = document.getElementById('select-hymn');
+            hymnSelect.innerHTML = '';
+
+            const hymns = classHymnsData[classVal];
+
+            if (hymns && hymns.length > 0) {
+                hymns.forEach(h => {
+                    const opt = document.createElement('option');
+                    opt.value = h.id;
+                    opt.textContent = h.title;
+                    hymnSelect.appendChild(opt);
+                });
+            } else {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'لا توجد ألحان مضافة لهذا الصف حالياً';
+                hymnSelect.appendChild(opt);
+            }
+            loadHymnData();
+        }
+
+        function loadHymnData() {
+            const classSelect = document.getElementById('select-class');
+            const classVal = classSelect.value;
+            const classText = classSelect.options[classSelect.selectedIndex].text;
+
+            const reciterSelect = document.getElementById('select-reciter');
+            const reciterVal = reciterSelect.value;
+            const reciterText = reciterSelect.options[reciterSelect.selectedIndex].text;
+
+            const hymnSelect = document.getElementById('select-hymn');
+            const hymnId = hymnSelect.value;
+            const hymns = classHymnsData[classVal];
+
+            const container = document.getElementById('lyrics-container');
+            const header = document.getElementById('grid-header');
+            const playerBox = document.getElementById('audio-player-box');
+            const player = document.getElementById('audio-player');
+
+            if (!hymns || hymns.length === 0 || !hymnId) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 font-bold">لا توجد ألحان متاحة لهذا الصف حالياً.</div>`;
+                header.className = "hidden";
+                playerBox.style.display = "none";
+                return;
+            }
+
+            const selectedHymn = hymns.find(h => h.id === hymnId);
+            if (selectedHymn) {
+                document.getElementById('active-class-tag').textContent = classText;
+                document.getElementById('active-title').textContent = selectedHymn.title;
+                document.getElementById('active-reciter-name').textContent = `بصوت: ${reciterText}`;
+                
+                const audioUrl = selectedHymn.reciterAudios ? selectedHymn.reciterAudios[reciterVal] : null;
+
+                if (!audioUrl) {
+                    header.className = "hidden";
+                    playerBox.style.display = "none";
+                    player.pause();
+                    player.src = "";
+                    
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-full p-6 text-center">
+                            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mb-4 border border-red-200">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <h4 class="text-lg font-extrabold text-red-700 mb-2">عذراً، التسجيل غير متوفر!</h4>
+                            <p class="text-slate-600 text-sm font-bold">اللحن لم يتم تسجيله بصوت (${reciterText})، إختر من القائمة مُرتِّل آخر.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                playerBox.style.display = "block";
+                renderLayout(selectedHymn);
+
+                if (player.src !== audioUrl) {
+                    player.src = audioUrl;
+                    player.load();
+                }
+            }
+        }
+
+        function playSelectedHymn() {
+            loadHymnData();
+            const player = document.getElementById('audio-player');
+            player.play().catch(e => {
+                console.log('يتطلب تفاعل المستخدم للبدء:', e);
+            });
+        }
+
+        function renderLayout(selectedHymn) {
+            const count = Object.values(activeSections).filter(Boolean).length;
+            const container = document.getElementById('lyrics-container');
+            const header = document.getElementById('grid-header');
+            container.innerHTML = '';
+
+            if (count === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 font-bold">برجاء اختيار لغة واحدة على الأقل للعرض.</div>`;
+                header.className = "hidden";
+                return;
+            }
+
+            header.className = `grid grid-cols-${count} text-center bg-red-600 text-white p-2 border-2 border-red-600 font-extrabold text-xs mb-1`;
+            
+            document.getElementById('header-col-ar').style.display = activeSections['ar'] ? 'block' : 'none';
+            document.getElementById('header-col-co-ar').style.display = activeSections['co-ar'] ? 'block' : 'none';
+            document.getElementById('header-col-co').style.display = activeSections['co'] ? 'block' : 'none';
+
+            if (!selectedHymn) return;
+
+            selectedHymn.quarters.forEach((q) => {
+                if (q.season) {
+                    const seasonBanner = document.createElement('div');
+                    seasonBanner.className = 'bg-red-600 text-white text-center font-extrabold py-1 my-0.5 border border-red-600 text-xs';
+                    seasonBanner.textContent = q.season;
+                    container.appendChild(seasonBanner);
+                }
+
+                const quarterBox = document.createElement('div');
+                quarterBox.className = `quarter-box grid grid-cols-${count}`;
+
+                let innerHtml = '';
+
+                if (activeSections['ar']) {
+                    innerHtml += `<div class="hymn-cell font-bold text-slate-800 text-xs md:text-sm">`;
+                    q.ar.forEach(line => { innerHtml += `<div class="lyric-line">${line}</div>`; });
+                    innerHtml += `</div>`;
+                }
+
+                if (activeSections['co-ar']) {
+                    innerHtml += `<div class="hymn-cell font-bold text-coptic-darkGold text-xs md:text-sm">`;
+                    q.coAr.forEach(line => { innerHtml += `<div class="lyric-line">${line}</div>`; });
+                    innerHtml += `</div>`;
+                }
+
+                if (activeSections['co']) {
+                    innerHtml += `<div class="hymn-cell font-bold text-slate-800 text-xs md:text-base coptic-text" dir="ltr">`;
+                    q.co.forEach(line => { 
+                        // دعم كلا الطريقتين لكتابة الجينكم (سواء كانت قبل الحرف أو بعده) لتعمل الكود بشكل سليم ومتطابق مع كل النص
+                        const adjustedLine = line.replace(/(?:̀([\u0370-\u03FF\u2C80-\u2CFF])|([\u0370-\u03FF\u2C80-\u2CFF])̀)/g, (match, p1, p2) => {
+                            const char = p1 || p2;
+                            return `<span class="jinkim-wrapper">${char}<span class="jinkim-mark">̀</span></span>`;
+                        });
+                        innerHtml += `<div class="lyric-line">${adjustedLine}</div>`; 
+                    });
+                    innerHtml += `</div>`;
+                }
+
+                quarterBox.innerHTML = innerHtml;
+                container.appendChild(quarterBox);
+            });
+        }
+
+        function toggleSection(type) {
+            activeSections[type] = !activeSections[type];
+            
+            const btn = document.getElementById(`btn-toggle-${type}`);
+            const icon = document.getElementById(`icon-${type}`);
+
+            if (activeSections[type]) {
+                btn.classList.remove('bg-slate-200', 'text-slate-500', 'border-slate-300');
+                btn.classList.add('bg-white', 'text-coptic-navy', 'border-coptic-gold');
+                icon.className = 'fa-solid fa-square-check text-base text-coptic-darkGold';
+            } else {
+                btn.classList.remove('bg-white', 'text-coptic-navy', 'border-coptic-gold');
+                btn.classList.add('bg-slate-200', 'text-slate-500', 'border-slate-300');
+                icon.className = 'fa-regular fa-square text-base text-slate-400';
+            }
+
+            const classVal = document.getElementById('select-class').value;
+            const hymnId = document.getElementById('select-hymn').value;
+            const hymns = classHymnsData[classVal];
+            const selectedHymn = hymns ? hymns.find(h => h.id === hymnId) : null;
+
+            renderLayout(selectedHymn);
+        }
+
+        window.onload = function() {
+            onClassChange();
+        };
+    </script>
+</body>
+</html>
