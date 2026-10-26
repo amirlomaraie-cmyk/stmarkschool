@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المسابقات الدراسية - مدرسة التسبيح</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coptic: {
+                            gold: '#D4AF37',
+                            darkGold: '#AA7C11',
+                            navy: '#0F172A',
+                            sky: '#0284C7',
+                            lightSky: '#E0F2FE',
+                            deepSky: '#0F172A',
+                            burgundy: '#800020',
+                            cream: '#FBF9F5'
+                        }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #FBF9F5; text-align: center; }
+
+        .fade-word {
+            opacity: 0;
+            transform: translateY(10px);
+            display: inline-block;
+            animation: fadeInWord 0.5s forwards;
+        }
+        @keyframes fadeInWord {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* تنسيقات سلم الجوائز (من سيربح المليون) */
+        .money-step {
+            transition: all 0.3s ease;
+        }
+        .money-step.active {
+            background-color: #D4AF37 !important;
+            color: #0F172A !important;
+            font-weight: 800 !important;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+        .money-step.passed {
+            color: #10B981 !important;
+            opacity: 0.8;
+        }
+
+        /* تأثير الوميض لمدة 3 ثواني */
+        @keyframes blinkGreen {
+            0%, 100% { background-color: #059669; border-color: #34D399; box-shadow: 0 0 20px #10B981; }
+            50% { background-color: #065F46; border-color: #059669; box-shadow: none; }
+        }
+        @keyframes blinkRed {
+            0%, 100% { background-color: #DC2626; border-color: #F87171; box-shadow: 0 0 20px #EF4444; }
+            50% { background-color: #991B1B; border-color: #DC2626; box-shadow: none; }
+        }
+        .animate-blink-green {
+            animation: blinkGreen 0.75s ease-in-out infinite;
+        }
+        .animate-blink-red {
+            animation: blinkRed 0.75s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-coptic-cream text-slate-800 font-cairo antialiased min-h-screen flex flex-col justify-between" onload="initQuizPage()">
+
+    <!-- Header / Navbar -->
+    <header class="bg-coptic-navy text-white shadow-xl sticky top-0 z-50 border-b-2 border-coptic-gold">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center border-b border-amber-500/20 gap-2">
+            <div class="flex items-center justify-center space-x-3 space-x-reverse">
+                <a href="index.html" class="w-10 h-10 rounded-full bg-coptic-gold/20 flex items-center justify-center border border-coptic-gold">
+                    <i class="fa-solid fa-cross text-coptic-gold text-xl"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-white leading-tight">مدرسة التسبيح</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="text-center text-xs md:text-sm text-amber-100 font-semibold flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-coptic-gold/40">
+                    <i class="fa-solid fa-church text-coptic-gold"></i>
+                    <span>كنيسة الشهيد العظيم مارمرقس الرسول ببني صامت</span>
+                </div>
+                <a href="index.html" class="bg-coptic-gold text-coptic-navy border border-coptic-gold px-3 py-1.5 rounded-xl text-xs font-extrabold hover:bg-amber-400 transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-house"></i>
+                    <span>الرئيسية</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow py-8 px-4">
+        <div class="max-w-6xl mx-auto text-right">
+            <a href="index.html" onclick="stopAllAudio()" class="mb-6 inline-flex items-center gap-2 text-coptic-navy font-bold hover:underline">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>العودة للرئيسية</span>
+            </a>
+            
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-slate-200 relative overflow-hidden">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-coptic-gold/20 text-coptic-darkGold rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner border border-coptic-gold"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <h3 class="text-3xl font-extrabold text-coptic-navy mb-2">مسابقة من سيربح المليون التفاعلية</h3>
+                    <p class="text-slate-600">أجب على الأسئلة واصعد سلم المبالغ المالية نحو 1,000,000 $!</p>
+                </div>
+
+                <!-- إعدادات المسابقة -->
+                <div id="quiz-setup-section" class="space-y-6 max-w-xl mx-auto bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div>
+                        <label class="block font-bold text-slate-700 text-sm mb-2">اسم الطالب (الثلاثي):</label>
+                        <input type="text" id="quiz-student-name" placeholder="اكتب اسمك هنا..." class="w-full p-3 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 text-sm mb-2">اختر المادة الدراسية:</label>
+                        <select id="quiz-subject" onchange="updateLessons()" class="w-full p-3 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                            <option value="bible">الكتاب المقدس </option>
+                            <option value="rituals">الطقس الكنسي</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 text-sm mb-2">اختر الفصل الدراسي:</label>
+                        <select id="quiz-class" onchange="updateLessons()" class="w-full p-3 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                            <option value="1">الصَّف الأول الإبتدائي</option>
+                            <option value="2">الصَّف الثاني الإبتدائي</option>
+                            <option value="3">الصَّف الثالث الإبتدائي</option>
+                            <option value="4">الصَّف الرابع الإبتدائي</option>
+                            <option value="5">الصَّف الخامس الإبتدائي</option>
+                            <option value="6">الصَّف السادس الإبتدائي</option>
+                            <option value="prep1">الصَّف الأول الإعدادي</option>
+                            <option value="prep2">الصَّف الثاني الإعدادي</option>
+                            <option value="prep3">الصَّف الثالث الإعدادي</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 text-sm mb-2">اختر اسم الدرس:</label>
+                        <select id="quiz-lesson" class="w-full p-3 bg-white border border-slate-300 rounded-xl font-semibold text-slate-700 focus:outline-none focus:border-coptic-navy text-sm">
+                        </select>
+                    </div>
+
+                    <button onclick="startQuiz()" class="w-full bg-coptic-navy text-coptic-gold font-bold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-md border border-coptic-gold/40 flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-play"></i>
+                        <span>بدء مسابقة المليون الآن</span>
+                    </button>
+                </div>
+
+                <!-- شاشة الانتظار وسماع الموسيقى الافتتاحية -->
+                <div id="quiz-loading-section" class="hidden text-center py-16 space-y-6">
+                    <div class="w-20 h-20 bg-coptic-gold/20 text-coptic-gold rounded-full flex items-center justify-center mx-auto text-4xl animate-pulse border-2 border-coptic-gold">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <h4 class="text-2xl font-extrabold text-coptic-navy">استعدوا.. اللحظات الحاسمة تبدأ الآن في طريقك نحو المليون!</h4>
+                    <p class="text-slate-500 text-sm">يرجى الانتظار لحين انتهاء المقدمة الموسيقية وظهور السؤال الأول...</p>
+                </div>
+
+                <!-- تنبيه عدم التوفر -->
+                <div id="quiz-notice-section" class="hidden text-center py-12 space-y-4">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto text-2xl"><i class="fa-solid fa-clock"></i></div>
+                    <h4 class="text-2xl font-bold text-coptic-navy">عذراً، مسابقات هذا الدرس أو الفصل غير متوفرة حالياً</h4>
+                    <p class="text-slate-600 font-semibold text-lg">سيتم إضافته قريباً!</p>
+                    <button onclick="resetQuiz()" class="bg-coptic-navy text-coptic-gold font-bold px-6 py-2.5 rounded-xl hover:bg-slate-800 transition text-sm">العودة للخيار</button>
+                </div>
+
+                <!-- واجهة أسئلة من سيربح المليون -->
+                <div id="quiz-questions-section" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6 text-right">
+                    
+                    <!-- قسم السؤال والإجابات -->
+                    <div class="lg:col-span-3 space-y-6">
+                        <div class="flex justify-between items-center bg-coptic-navy text-white p-4 rounded-xl border border-coptic-gold/40 shadow">
+                            <span id="quiz-info-header" class="font-bold text-coptic-gold text-sm"></span>
+                            <span class="bg-coptic-gold text-coptic-navy text-xs font-extrabold px-3 py-1 rounded-full">
+                                السؤال الحالى: <span id="current-q-num">1</span> / <span id="total-q-num">10</span>
+                            </span>
+                        </div>
+
+                        <div id="question-card" class="bg-slate-900 text-white p-6 md:p-8 rounded-2xl border-2 border-coptic-gold shadow-2xl space-y-6">
+                            <h4 id="question-text" class="text-xl md:text-2xl font-extrabold text-amber-100 leading-relaxed text-center"></h4>
+                            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs text-slate-500 font-semibold">اختر الإجابة ثم اضغط تأكيد للمتابعة</span>
+                            <button onclick="confirmAnswer()" id="next-btn" class="bg-coptic-gold text-coptic-navy font-extrabold px-8 py-3 rounded-xl hover:bg-amber-400 transition shadow-lg flex items-center gap-2 text-base">
+                                <span>تأكيد الإجابة</span>
+                                <i class="fa-solid fa-check-double"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- القائمة الجانبية: سلم المبالغ -->
+                    <div class="lg:col-span-1 bg-coptic-navy text-white p-4 rounded-2xl border-2 border-coptic-gold shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="text-center pb-3 border-b border-coptic-gold/30 mb-3">
+                                <h5 class="text-coptic-gold font-extrabold text-sm flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                                    <span>سلم المبالغ المتاحة</span>
+                                </h5>
+                            </div>
+                            <div id="money-ladder-container" class="space-y-1.5 text-xs font-bold max-h-[380px] overflow-y-auto px-1 flex flex-col"></div>
+                        </div>
+                        <div class="pt-3 border-t border-coptic-gold/30 text-center">
+                            <p class="text-[11px] text-amber-200/80">المبلغ المستهدف:</p>
+                            <p class="text-coptic-gold font-black text-lg">1,000,000 $</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- شاشة النتيجة عند الفوز أو الخطأ -->
+                <div id="quiz-result-section" class="hidden text-center space-y-6 py-8">
+                    <div id="result-icon-box" class="w-24 h-24 bg-amber-100 text-coptic-gold rounded-full flex items-center justify-center mx-auto text-5xl shadow-inner border-2 border-coptic-gold">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="text-3xl font-extrabold text-coptic-navy">عزيزي الطالب: <span id="result-student-name"></span></h4>
+                    
+                    <div class="max-w-xl mx-auto bg-slate-900 text-white p-6 rounded-2xl border-2 border-coptic-gold shadow-xl space-y-3">
+                        <p class="text-slate-300 text-sm font-semibold" id="result-status-title">لقد انتهت المسابقة!</p>
+                        <p class="text-amber-300 font-extrabold text-lg">المبلغ الذي حصلت عليه هو:</p>
+                        <div class="text-4xl md:text-5xl font-black text-coptic-gold tracking-wide drop-shadow-md" id="final-prize-money">
+                            0 $
+                        </div>
+                    </div>
+
+                    <div id="wrong-answers-container" class="mt-6 text-right space-y-4 max-w-2xl mx-auto"></div>
+
+                    <div class="pt-4 flex justify-center gap-4">
+                        <button onclick="resetQuiz()" class="bg-coptic-gold text-coptic-navy font-bold px-8 py-3.5 rounded-xl hover:bg-coptic-darkGold hover:text-white transition shadow-lg text-base">
+                            <i class="fa-solid fa-rotate-right ml-2"></i>
+                            إعادة المسابقة من جديد
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-coptic-navy text-slate-200 py-6 px-4 border-t-2 border-coptic-gold text-center">
+        <p class="text-coptic-gold font-bold text-base">كنيسة الشهيد العظيم مارمرقس الرسول ببني صامت</p>
+        <p class="text-xs text-slate-400">جميع الحقوق محفوظة © 2026 - مدرسة التسبيح</p>
+    </footer>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- JavaScript Quiz Logic -->
+    <script>
+        const SUPABASE_URL = 'https://lbsesqswjizxhtimuzan.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_XdBm9Pdk2MFq8QCrWTXjqQ_Rel5TKDz';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- المؤثرات الصوتية للمسابقة ---
+        const audioIntro = new Audio('https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/Million/inter.webm');
+        const audioBg = new Audio('https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/Million/music.webm');
+        const audioCorrect = new Audio('https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/Million/true.mp3');
+
+        audioBg.loop = true;
+
+        function stopAllAudio() {
+            audioIntro.pause();
+            audioIntro.currentTime = 0;
+            audioBg.pause();
+            audioBg.currentTime = 0;
+            audioCorrect.pause();
+            audioCorrect.currentTime = 0;
+        }
+
+        const availableLessons = {
+            'bible-6': [
+                { id: 'yonan', name: 'الدرس الأول: يونان النبي' },
+                { id: 'isaiah', name: 'الدرس الثاني: أشعياء يرى المُستقبل' }
+            ],
+            'bible-2': [
+                { id: 'yaacoub', name: 'الدرس الأول: يعقوب المُخادع' },
+                { id: 'youssef', name: 'الدرس الثاني: الابن المحبوب يصير عبداً' }
+            ],
+            'bible-3': [
+                { id: 'exodus', name: 'الدرس الأول: باي باي فرعون' }
+            ],
+            'rituals-3': [
+                { id: 'lesson1', name: 'الدرس الأول: الصليب' }
+            ],
+            'bible-prep1': [
+                { id: 'galatians12', name: 'رسالة غلاطية، الأصحاح الأول والثاني' }
+            ]
+        };
+
+        const sampleQuestions = {
+            'bible-6-yonan': [
+                { q: 'كان يونان يعيش في أرض مصر', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أرسل الله دودة لتأكل الشجرة', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أرسل الله يونان ليذهب إلي مدينة ترشيش', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كانت مدينة ترشيش أكبر وأقوي مدينة في العالم', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'غضب يونان من الله وقال: خُذ نفسي مني لأن حياتي خير من موتي', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'يونان لم يسمع كلام الله، وهرب إلي مدينة نينوي', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أرسل الله رياح وعاصفة شديدة علي البحر', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أخبر يونان البحارة بأنه هربان من الله ولم يسمع لكلامه', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أخبر الله يونان النبي بأن يذهب إلي مدينة:', type: 'mcq', options: ['ترشيش', 'نينوي', 'أورشليم'], correct: 'نينوي' },
+                { q: 'ماذا فعلوا البحارة ليهدأ البحر عنهم؟', type: 'mcq', options: ['ألقوا الأشياء التي كانت معهم في البحر', 'ألقوا يونان في البحر', 'الإثنين معاً'], correct: 'الإثنين معاً' },
+                { q: 'ارسل الله ليونان:', type: 'mcq', options: ['دولفين', 'سمكة قرش', 'حوت'], correct: 'حوت' },
+                { q: 'كم يوم مكث يونان في بطن الحوت؟', type: 'mcq', options: ['5 أيام', '6 أيام', '3 أيام'], correct: '3 أيام' },
+                { q: 'أخبر الله يونان بأن المدينة ستنقلب بعد كام يوم؟', type: 'mcq', options: ['50 يوم', '3 أيام', '40 يوم'], correct: '40 يوم' },
+                { q: 'أطاع يونان كلام الله في المرة:', type: 'mcq', options: ['الأولي', 'الثانية', 'الثالثة'], correct: 'الثانية' },
+                { q: 'صام أهل نينوي وصلوا ولبسوا:', type: 'mcq', options: ['حرير', 'صوف', 'خيش'], correct: 'خيش' }
+            ],
+            'bible-6-isaiah': [
+                { q: 'وعظ إشعياء النبي في عهد 3 ملوك', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أصيب الملك عزيا بمرض البرص', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'يوثام كان يطيع كلام ربنا وحكم لمدة 16 سنة', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'مات الملك آحاز وهو عنده 35 سنة', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'في أيام الملك حزقيا هجم جيش على مملكة أريحا', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أشعياء تكلم عن ربنا وقال إنه يولد لنا ولد والرياسة تكون على:', type: 'mcq', options: ['رأسه', 'كتفه', 'يده'], correct: 'كتفه' },
+                { q: 'حكم الملك عزيا لمدة:', type: 'mcq', options: ['60 سنة', '50 سنة', '52 سنة'], correct: '60 سنة' },
+                { q: 'الملك الذي أزال عبادة الأوثان:', type: 'mcq', options: ['الملك يوثام', 'الملك آحاز', 'الملك حزقيا'], correct: 'الملك حزقيا' },
+                { q: 'ربنا قال لأشعياء لا تخف من العدو لأني سأجعله:', type: 'mcq', options: ['ينهزم', 'يغلب', 'يحارب'], correct: 'ينهزم' },
+                { q: 'انسحب جيش العدو دون أن يحارب في أيام الملك:', type: 'mcq', options: ['عزيا', 'يوثام', 'حزقيا'], correct: 'حزقيا' }
+            ],
+            'bible-2-yaacoub': [
+                { q: 'تزوج عيسو إمرأتين من الحثيين الذين لا يعبدون الله', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أعدت رفقة خطة حتي يأخُذ عيسو البركة.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'عندما عَلِمَ عيسو بخداع أخيه يعقوب لأبيه سامحه علي الفور.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'هرب يعقوب إلي خاله لابان.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'خدع لابان يعقوب وزوّجه ليئة بدلاً من راحيل.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أحب يعقوب ليئة إبنة خاله.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'رجع يعقوب إلي بيت أبيه، وعندما رآه عيسو قتله.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كان إبراهيم وزوجته رفقة سعيدان لأن الله سيرزقهما بطفلين في وقت واحد.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'قال الله لرفقة أنَّ إبنها الأصغر سيكون أعظم.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'كان يعقوب وعيسو مُتشابهان.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كان عيسو هو الإبن الأصغر.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كان عيسو مُشعراً وكان صياداً ماهراً', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'كان يعقوب أملس الجلد وأحب العمل بقُرب البيت.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أحب إسحق يعقوب، بينما أحبت رفقة عيسو', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'باع يعقوب البكورية لأخيه عيسو.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'تمسك عيسو بوعد الله بأنَّ البركة تكون للمولود الأول.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'تكلَّم الله مع يعقوب في حلم ووعده بأنَّه سيكون معه.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'خدم يعقوب 14 سنة حتي تزوج ليئة إبنة خاله.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كم طفل ولدته رفقة؟', type: 'mcq', options: ['ولد', 'إثنين', 'ثلاثة'], correct: 'إثنين' },
+                { q: 'وعد الله رفقة بأن يكون إبنها ............... هو الأعظم.', type: 'mcq', options: ['الأكبر', 'الأصغر', 'الإثنين معاً'], correct: 'الأصغر' },
+                { q: 'الإبن البكر هو مَن وُلِدَ............', type: 'mcq', options: ['أولاً', 'ثانياً', 'ثالثاً'], correct: 'أولاً' },
+                { q: 'كان عيسو..............', type: 'mcq', options: ['مُشعراً', 'أملساً', 'نجاراً'], correct: 'مُشعراً' },
+                { q: 'أحبت رفقة............. أكثر من أخيه.', type: 'mcq', options: ['يعقوب', 'عيسو', 'إسحق'], correct: 'يعقوب' },
+                { q: 'أحب إسحق...........أكثر من أخيه.', type: 'mcq', options: ['إبراهيم', 'يعقوب', 'عيسو'], correct: 'عيسو' },
+                { q: 'خدع .......... أبيه وأخذ البركة بدلاً من أخيه.', type: 'mcq', options: ['عيسو', 'لابان', 'يعقوب'], correct: 'يعقوب' }
+            ],
+            'bible-2-youssef': [
+                { q: 'فرح إخوة يوسف عند سماعهم أحلامه.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أحب يعقوب يوسف أكثر من إخوته.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'وافق رأوبين إخوته في قتل يوسف.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كذب إخوة يوسف على أبيهم فقالوا أن وحشاً افترسه.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'رأى يوسف في حلمه الأول الشمس والقمر وإحدى عشر كوكباً تسجد له.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'رأى يوسف في حلمه الثاني أن حزم قمح إخوته تسجد لحزمته.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أعطى الله حصاداً وفيراً وثروة كثيرة لفوطيفار بسبب يوسف.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'عندما ذهب يوسف لإخوته في الحقل أخذوه وألقوه في البئر ثم باعوه.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أهدى يعقوب ليوسف ابنه ................. تعبيراً عن محبته له.', type: 'mcq', options: ['خاتم ذهب', 'قميص ملون', 'خروف'], correct: 'قميص ملون' },
+                { q: 'رأى يوسف في حلمه الأول .................', type: 'mcq', options: ['الشمس والقمر وأحد عشر كوكباً تسجد له', 'حزم قمح إخوته تسجد لحزمته', 'بقرات سمينة'], correct: 'حزم قمح إخوته تسجد لحزمته' },
+                { q: 'أخذ التجار يوسف ونزلوا به إلي ................. بعد أن باعه إخوته.', type: 'mcq', options: ['مصر', 'أورشليم', 'لبنان'], correct: 'مصر' },
+                { q: 'إشتري ................. يوسف عبداً في بيته.', type: 'mcq', options: ['ساقي الملك', 'الخباز', 'فوطيفار'], correct: 'فوطيفار' },
+                { q: 'كانوا ................. مع يوسف في السجن وفسر لهم أحلامهم.', type: 'mcq', options: ['حارس وكاتب الملك', 'الساقي والخباز', 'فرعون'], correct: 'الساقي والخباز' },
+                { q: 'طلبت ................. المرأة الشريرة من يوسف أن يحل محل زوجها.', type: 'mcq', options: ['زوجة فرعون', 'زوجة فوطيفار', 'زوجة حارس السجن'], correct: 'زوجة فوطيفار' },
+                { q: 'كان مصير قميص يوسف الملون هو .................', type: 'mcq', options: ['أحرقوه', 'خبأوه', 'لطخوه بالدماء ليخدعوا أبيهم'], correct: 'لطخوه بالدماء ليخدعوا أبيهم' },
+                { q: 'إقترح ................. أن لا يقتلوا يوسف بل يلقوه في البئر لكي ينقذه لاحقاً.', type: 'mcq', options: ['يهوذا', 'رأوبين', 'لاوي'], correct: 'رأوبين' },
+                { q: 'كان يوسف يعمل ................. في بيت فوطيفار.', type: 'mcq', options: ['حارساً', 'رئيس الخدم', 'طباخاً'], correct: 'رئيس الخدم' },
+                { q: 'اسم والد يوسف هو:', type: 'mcq', options: ['إبراهيم', 'اسحق', 'يعقوب'], correct: 'يعقوب' },
+                { q: 'اسم الأخ الأكبر ليوسف هو:', type: 'mcq', options: ['رأوبين', 'اسحق', 'يهوذا'], correct: 'رأوبين' },
+                { q: 'اسم الأخ الذي اقترح بيع يوسف:', type: 'mcq', options: ['يهوذا', 'لاوي', 'بنيامين'], correct: 'يهوذا' },
+                { q: 'أمسكت زوجة فوطيفار ................. من يوسف لتشتكيه لزوجها.', type: 'mcq', options: ['الحذاء', 'الثوب', 'الكأس'], correct: 'الثوب' },
+                { q: 'كان إخوة يوسف يكرهونه لأنه .................', type: 'mcq', options: ['كان شريراً', 'محبوباً من أبيه أكثر منهم', 'أجمل منهم'], correct: 'محبوباً من أبيه أكثر منهم' },
+                { q: 'عندما اشتكت زوجة فوطيفار يوسف لزوجها ألقاه في السجن.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'المعنى من أحلام يوسف أنه سيكون أكثر أهمية من إخوته.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أطاع يوسف زوجة فوطيفار وأخطأ إلى الله.', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' }
+            ],
+            'bible-3-exodus': [
+                { q: 'كان فرعون بيحب شعب بني إسرائيل', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كان شعب بني اسرائيل بيشتغل عبيد عند فرعون والمصريين', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'ألقي هارون العصا أمام فرعون فتحولت إلي صخرة', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'تحولت مياه النهر إلي دم', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'ضرب الله المصريين عشر ضربات', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'رحل شعب بني إسرائيل من مصر بعد ضربة الضفادع', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كانت ضربة موت الأبكار علي الأقل بيموت أربعة من كل بيت من بيوت المصريين', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كان شعب بني إسرائيل عايش في مصر حوالي 430 سنة', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أرسل الله لشعب بني إسرائيل سحابة في الصباح وعمود نار بالليل', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'عندما ضرب موسي البحر الأبيض بالعصا إنشق إلي نصفين', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'رفض الملك......خروج شعب بني إسرائيل من مصر', type: 'mcq', options: ['دقلديانوس', 'فرعون', 'شاول'], correct: 'فرعون' },
+                { q: 'تحولت عصا هارون إلي......', type: 'mcq', options: ['صخرة', 'عامود نار', 'حية'], correct: 'حية' },
+                { q: 'أرسل الله ظلام تام لمُدة... أيام', type: 'mcq', options: ['ثلاثة', 'خمسة', 'تسعة'], correct: 'ثلاثة' },
+                { q: 'أرسل الله .... ضربات لفرعون والمصريين', type: 'mcq', options: ['سبعة', 'عشرة', 'خمسة'], correct: 'عشرة' },
+                { q: 'قاد الله شعب بني إسرائيل بعد خروجهم من مصر وأرسل لهم..... ليلاً', type: 'mcq', options: ['سحابة', 'عامود نار', 'الإتنين معاً'], correct: 'عامود نار' },
+                { q: 'كانت ضربة موت الأبكار يموت ........ من كُل بيت من بيوت المصريين', type: 'mcq', options: ['ستة', 'أربعة', 'واحد'], correct: 'واحد' },
+                { q: 'إنشق البحر ........... لنصفين', type: 'mcq', options: ['الأبيض', 'الأحمر', 'الأبيض المتوسط'], correct: 'الأحمر' },
+                { q: 'بعد ......... سنة أصبح بنو إسرائيل أحراراً', type: 'mcq', options: ['430', '470', '350'], correct: '430' },
+                { q: 'تحولت مياه النهر إلي ............', type: 'mcq', options: ['خمر', 'دم', 'زيت'], correct: 'دم' },
+                { q: 'كان شعب بني إسرائيل يجمعون ............... المطلوب منهم', type: 'mcq', options: ['الطوب الأحمر', 'الطوب اللبن', 'الرمل'], correct: 'الطوب اللبن' }
+            ],
+            'rituals-3-lesson1': [
+                { q: 'لما بنعمل حاجة غلط بنروح لأبونا في سر الميرون', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'ناحية اليمين بتدل على القوة', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'في رسم الصليب، صباعي بيروح من اليمين للشمال', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'بنحتفل بعيد الصليب ٣ مرات في السنة', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'الجنود لقوا الصلبان تحت جبل كبير', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'من صفات الفادي يكون خاطئ', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'الوحيد اللي اقوى من الموت الصليب', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'الآب والابن والروح القدس هم اله واحد', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أبونا بيمسك الشورية في ايديه علشان تحميه', type: 'mcq', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'من صفات الفادي:', type: 'mcq', options: ['غير محدود', 'يكون انسان', 'الاثنان معاً'], correct: 'الاثنان معاً' },
+                { q: 'الملكة اللي راحت تدور على الصليب:', type: 'mcq', options: ['استير', 'هيلانة', 'هيروديا'], correct: 'هيلانة' },
+                { q: 'بنحط الصليب في مكان عالي اسمه:', type: 'mcq', options: ['المنارة', 'الدير', 'المذبح'], correct: 'المنارة' },
+                { q: 'علشان يعرفوا صليب بابا يسوع حطوا الصليب:', type: 'mcq', options: ['علي واحد في الجنازة', 'في فرح', 'صلوا في الكنيسة'], correct: 'علي واحد في الجنازة' },
+                { q: 'الملكة هيلانة سمعت صوت وهي نايمة تروح:', type: 'mcq', options: ['لمصر', 'اورشليم', 'القدس'], correct: 'اورشليم' },
+                { q: 'ابونا بيدهنا بالزيت في راسنا واحنا أطفال في سر:', type: 'mcq', options: ['الميرون', 'التوبة والاعتراف', 'التناول'], correct: 'الميرون' },
+                { q: 'لما اتنين بيتجوزوا ده اسمه سر:', type: 'mcq', options: ['التناول', 'الزيجة', 'الميرون'], correct: 'الزيجة' },
+                { q: 'كم صليب وجدوه الجنود؟', type: 'mcq', options: ['صليب', 'صليبين', 'ثلاثة صلبان'], correct: 'ثلاثة صلبان' },
+                { q: 'بنحتفل بعيد الصليب:', type: 'mcq', options: ['١٠ توت', '10 برمهات', '٥ بؤونة'], correct: '10 برمهات' },
+                { q: 'تم العثور على صليب السيد المسيح الحقيقي بواسطة:', type: 'mcq', options: ['الملكة هيلانة', 'الإمبراطور قسطنطين', 'البابا أثناسيوس'], correct: 'الملكة هيلانة' },
+                { q: 'عندما نرسم علامة الصليب على أجسادنا نبدأ من:', type: 'mcq', options: ['اليسار لليمين', 'اليمين لليسار', 'أعلى لأسفل مباشرة'], correct: 'اليسار لليمين' }
+            ],
+            'bible-prep1-galatians12': [
+                { q: 'كُتِبت الرسالة إلى:', type: 'mcq', options: ['روما', 'كنائس غلاطية', 'كورنثوس'], correct: 'كنائس غلاطية' },
+                { q: 'تعجب بولس لأنهم انتقلوا إلى:', type: 'mcq', options: ['إنجيل آخر', 'مدينة أخرى', 'عمل آخر'], correct: 'إنجيل آخر' },
+                { q: 'بولس الرسول أخذ إنجيله بـ:', type: 'mcq', options: ['إعلان يسوع المسيح', 'تقليد الناس', 'تعليم الكهنة'], correct: 'إعلان يسوع المسيح' },
+                { q: 'قبل الإيمان كان بولس الرسول يضطهد:', type: 'mcq', options: ['كنيسة الله', 'نفسه', 'الفقراء'], correct: 'كنيسة الله' },
+                { q: 'بعد إيمانه ذهب بولس الرسول إلى:', type: 'mcq', options: ['اورشليم', 'طرسوس', 'دمشق'], correct: 'دمشق' },
+                { q: 'صعد بولس الرسول إلى اورشليم بعد:', type: 'mcq', options: ['سنة واحدة', '٣ سنين', '١٤ سنة'], correct: '٣ سنين' },
+                { q: 'قابل بولس الرسول في اورشليم:', type: 'mcq', options: ['بولس وبرنابا', 'تيموثاوس وسيلا', 'بطرس ويعقوب'], correct: 'بطرس ويعقوب' },
+                { q: 'أخذ بولس الرسول معه:', type: 'mcq', options: ['بولس وبرنابا', 'برنابا وتيطس', 'سيلا وتيموثاوس'], correct: 'برنابا وتيطس' },
+                { q: 'حاشا لي أن افتخر إلا بـ:', type: 'mcq', options: ['نفسي', 'خدمتي', 'صليب ربنا يسوع المسيح'], correct: 'صليب ربنا يسوع المسيح' },
+                { q: 'بولس الرسول كان يرضى:', type: 'mcq', options: ['الناس', 'نفسه', 'ربنا'], correct: 'ربنا' },
+                { q: 'قال الرسول بولس لأهل غلاطية أن الذي يُبشرهم بإنجيل آخر غير الذي بشرهم به يَكون....', type: 'mcq', options: ['مبارك', 'نبي', 'أناثيما محروم'], correct: 'أناثيما محروم' },
+                { q: 'رسولية بولس الرسول من:', type: 'mcq', options: ['الناس', 'المجمع', 'يسوع المسيح'], correct: 'يسوع المسيح' },
+                { q: 'غلاطية حالياً في:', type: 'mcq', options: ['تركيا', 'إيطالية', 'فلسطين'], correct: 'تركيا' },
+                { q: 'معنى أناثيما:', type: 'mcq', options: ['مقدس', 'محروم ملعون', 'معلم'], correct: 'محروم ملعون' },
+                { q: 'لماذا انسحب بطرس عن الطعام مع الأمم:', type: 'mcq', options: ['تعبانًا', 'شجعانًا', 'خوفًا من اليهود'], correct: 'خوفًا من اليهود' },
+                { q: 'وبخ الرَّسول بولس الرَّسول بطرس في ........', type: 'mcq', options: ['اورشليم', 'انطاكية', 'غلاطية'], correct: 'انطاكية' },
+                { q: 'أنا بولس كتبت لكنائس غلاطية', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'تعجب بطرس الرسول لانتقال كنائس غلاطية لإنجيل آخر', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'لو ملاك بشر بإنجيل غير الإنجيل اللي بشر به بولس الرَّسول يكون أناثيما محروم', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'بولس الرسول كان يرضى الناس', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'قبل الإيمان كان بولس الرسول يضطهد الكنيسة', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'أخذ بولس الرَّسول إنجيله من الكهنة', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'كنائس اليهودية لم تعرف بولس الرسول بالوجه', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'أعمدة الكنيسة هم يعقوب وصفا ويوحنا وبولس الرسول', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'بطرس الرسول كان يعيش كأممي', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'لو البر بالناموس يبقى المسيح مات بلا سبب', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' },
+                { q: 'الناموس يبرر', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'بولس الرسول انسحب خوفًا من اليهود', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'إبراهيم تبرر بالناموس', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة خاطئة' },
+                { q: 'المسيح صار لعنة لأجلنا', type: 'tf', options: ['العبارة صحيحة', 'العبارة خاطئة'], correct: 'العبارة صحيحة' }
+            ]
+        };
+
+        let currentQuizData = [];
+        let currentQuestionIndex = 0;
+        let selectedOption = null;
+        let studentName = '';
+        let prizeLadder = [];
+        let currentEarnedMoney = "0 $";
+
+        function initQuizPage() {
+            updateLessons();
+        }
+
+        function updateLessons() {
+            const subject = document.getElementById('quiz-subject').value;
+            const classVal = document.getElementById('quiz-class').value;
+            const key = subject + '-' + classVal;
+            const lessonSelect = document.getElementById('quiz-lesson');
+            if(!lessonSelect) return;
+            lessonSelect.innerHTML = '';
+
+            if (availableLessons[key]) {
+                availableLessons[key].forEach(lesson => {
+                    const opt = document.createElement('option');
+                    opt.value = lesson.id;
+                    opt.textContent = lesson.name;
+                    lessonSelect.appendChild(opt);
+                });
+            } else {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'لا توجد مسابقات متاحة لهذا الفصل حالياً';
+                lessonSelect.appendChild(opt);
+            }
+        }
+
+        function generateMoneyLadder(totalQuestions) {
+            const baseValues = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+            let ladder = [];
+
+            if (totalQuestions <= 15) {
+                const step = Math.floor(baseValues.length / totalQuestions);
+                for (let i = 0; i < totalQuestions - 1; i++) {
+                    ladder.push(baseValues[i * step] || (100 * (i + 1)));
+                }
+                ladder.push(1000000);
+            } else {
+                for (let i = 0; i < totalQuestions - 1; i++) {
+                    let val = Math.round((900000 / totalQuestions) * (i + 1));
+                    ladder.push(Math.ceil(val / 100) * 100);
+                }
+                ladder.push(1000000);
+            }
+
+            return ladder.map(val => val.toLocaleString('en-US') + ' $');
+        }
+
+        function renderMoneyLadder() {
+            const container = document.getElementById('money-ladder-container');
+            container.innerHTML = '';
+            
+            for (let i = prizeLadder.length - 1; i >= 0; i--) {
+                const stepIndex = i;
+                const amount = prizeLadder[i];
+                let stateClass = "bg-slate-800 text-slate-300 border border-slate-700";
+                
+                if (stepIndex === currentQuestionIndex) {
+                    stateClass = "active border-coptic-gold";
+                } else if (stepIndex < currentQuestionIndex) {
+                    stateClass = "passed bg-slate-900 border border-emerald-500/30";
+                }
+
+                container.innerHTML += `
+                    <div class="money-step p-2 rounded-lg text-center flex justify-between items-center ${stateClass}">
+                        <span>سؤال ${stepIndex + 1}</span>
+                        <span class="font-extrabold tracking-wider">${amount}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('quiz-student-name').value.trim();
+            if (!nameInput) {
+                alert('الرجاء إدخال اسم الطالب ثلاثياً أولاً.');
+                return;
+            }
+            studentName = nameInput;
+            const subject = document.getElementById('quiz-subject').value;
+            const classVal = document.getElementById('quiz-class').value;
+            const lessonId = document.getElementById('quiz-lesson').value;
+            
+            const key = subject + '-' + classVal + '-' + lessonId;
+            if (sampleQuestions[key]) {
+                currentQuizData = sampleQuestions[key];
+                currentQuestionIndex = 0;
+                selectedOption = null;
+                currentEarnedMoney = "0 $";
+
+                prizeLadder = generateMoneyLadder(currentQuizData.length);
+
+                document.getElementById('quiz-setup-section').classList.add('hidden');
+                document.getElementById('quiz-notice-section').classList.add('hidden');
+                document.getElementById('quiz-questions-section').classList.add('hidden');
+                document.getElementById('quiz-result-section').classList.add('hidden');
+                document.getElementById('quiz-loading-section').classList.remove('hidden');
+
+                stopAllAudio();
+                
+                audioIntro.currentTime = 0;
+                audioIntro.play().then(() => {
+                    audioIntro.onended = () => {
+                        document.getElementById('quiz-loading-section').classList.add('hidden');
+                        document.getElementById('quiz-questions-section').classList.remove('hidden');
+
+                        document.getElementById('total-q-num').textContent = currentQuizData.length;
+                        const classText = document.getElementById('quiz-class').options[document.getElementById('quiz-class').selectedIndex].text;
+                        const lessonText = document.getElementById('quiz-lesson').options[document.getElementById('quiz-lesson').selectedIndex].text;
+                        document.getElementById('quiz-info-header').textContent = classText + ' - ' + lessonText;
+
+                        loadQuestion();
+                        audioBg.play().catch(e => console.log(e));
+                    };
+                }).catch(e => {
+                    document.getElementById('quiz-loading-section').classList.add('hidden');
+                    document.getElementById('quiz-questions-section').classList.remove('hidden');
+                    document.getElementById('total-q-num').textContent = currentQuizData.length;
+                    loadQuestion();
+                });
+
+            } else {
+                document.getElementById('quiz-setup-section').classList.add('hidden');
+                document.getElementById('quiz-questions-section').classList.add('hidden');
+                document.getElementById('quiz-result-section').classList.add('hidden');
+                document.getElementById('quiz-loading-section').classList.add('hidden');
+                document.getElementById('quiz-notice-section').classList.remove('hidden');
+            }
+        }
+
+        function loadQuestion() {
+            selectedOption = null;
+            const q = currentQuizData[currentQuestionIndex];
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = q.q;
+
+            renderMoneyLadder();
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['أ', 'ب', 'جـ', 'د'];
+            q.options.forEach((opt, idx) => {
+                optionsContainer.innerHTML += `
+                    <button onclick="selectOption('${opt}', this)" class="option-btn text-right flex items-center gap-3 p-4 bg-slate-800 border-2 border-slate-700 hover:border-coptic-gold rounded-xl transition cursor-pointer font-bold text-slate-100 text-base" data-option-text="${opt}">
+                        <span class="w-8 h-8 rounded-full bg-coptic-navy border border-coptic-gold/50 flex items-center justify-center text-coptic-gold text-sm font-extrabold flex-shrink-0">${prefixes[idx] || (idx+1)}</span>
+                        <span>${opt}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function selectOption(opt, btnElement) {
+            selectedOption = opt;
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('border-coptic-gold', 'bg-amber-950/60');
+                b.classList.add('border-slate-700', 'bg-slate-800');
+            });
+            btnElement.classList.remove('border-slate-700', 'bg-slate-800');
+            btnElement.classList.add('border-coptic-gold', 'bg-amber-950/60');
+        }
+
+        function confirmAnswer() {
+            if (!selectedOption) {
+                alert('الرجاء اختيار إجابة أولاً قبل التأكيد!');
+                return;
+            }
+
+            const currentQ = currentQuizData[currentQuestionIndex];
+            const clickedBtn = Array.from(document.querySelectorAll('.option-btn')).find(b => b.getAttribute('data-option-text') === selectedOption);
+            
+            document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
+            document.getElementById('next-btn').style.pointerEvents = 'none';
+
+            if (selectedOption === currentQ.correct) {
+                currentEarnedMoney = prizeLadder[currentQuestionIndex];
+                
+                if (clickedBtn) {
+                    clickedBtn.classList.remove('bg-slate-800', 'border-slate-700', 'bg-amber-950/60', 'border-coptic-gold');
+                    clickedBtn.classList.add('animate-blink-green');
+                }
+
+                audioBg.pause();
+                audioCorrect.currentTime = 2.0;
+                audioCorrect.play().then(() => {
+                    audioCorrect.onended = () => {
+                        if (clickedBtn) clickedBtn.classList.remove('animate-blink-green');
+                        document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'auto');
+                        document.getElementById('next-btn').style.pointerEvents = 'auto';
+
+                        if (currentQuestionIndex < currentQuizData.length - 1) {
+                            currentQuestionIndex++;
+                            loadQuestion();
+                            audioBg.play().catch(e => console.log(e));
+                        } else {
+                            finishQuiz(true, null);
+                        }
+                    };
+                }).catch(e => {
+                    setTimeout(() => {
+                        if (clickedBtn) clickedBtn.classList.remove('animate-blink-green');
+                        document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'auto');
+                        document.getElementById('next-btn').style.pointerEvents = 'auto';
+
+                        if (currentQuestionIndex < currentQuizData.length - 1) {
+                            currentQuestionIndex++;
+                            loadQuestion();
+                            audioBg.play().catch(err => console.log(err));
+                        } else {
+                            finishQuiz(true, null);
+                        }
+                    }, 3000);
+                });
+
+            } else {
+                if (clickedBtn) {
+                    clickedBtn.classList.remove('bg-slate-800', 'border-slate-700', 'bg-amber-950/60', 'border-coptic-gold');
+                    clickedBtn.classList.add('animate-blink-red');
+                }
+
+                const correctBtn = Array.from(document.querySelectorAll('.option-btn')).find(b => b.getAttribute('data-option-text') === currentQ.correct);
+                if (correctBtn) {
+                    correctBtn.classList.remove('bg-slate-800', 'border-slate-700');
+                    correctBtn.classList.add('animate-blink-green');
+                }
+
+                setTimeout(() => {
+                    if (clickedBtn) clickedBtn.classList.remove('animate-blink-red');
+                    if (correctBtn) correctBtn.classList.remove('animate-blink-green');
+                    document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'auto');
+                    document.getElementById('next-btn').style.pointerEvents = 'auto';
+
+                    finishQuiz(false, currentQ);
+                }, 3000);
+            }
+        }
+
+        async function sendEmailViaSupabase(fromName, messageText, subjectTitle) {
+            try {
+                const { data, error } = await supabaseClient.functions.invoke('send-email', {
+                    body: { from_name: fromName, message: messageText, subject: subjectTitle }
+                });
+                if (error) console.error('خطأ في إرسال البريد:', error);
+            } catch (err) {
+                console.error('فشل الاتصال:', err);
+            }
+        }
+
+        async function finishQuiz(isFullWin, failedQuestion) {
+            stopAllAudio();
+
+            const lessonText = document.getElementById('quiz-lesson').options[document.getElementById('quiz-lesson').selectedIndex].text;
+            const classText = document.getElementById('quiz-class').options[document.getElementById('quiz-class').selectedIndex].text;
+            const examName = 'مسابقة المليون - ' + classText + ' - ' + lessonText;
+
+            try {
+                await supabaseClient
+                    .from('quiz_results')
+                    .insert([
+                        { student_name: studentName, score: currentQuestionIndex + (isFullWin ? 1 : 0), total: currentQuizData.length, subject: examName + ` (${currentEarnedMoney})` }
+                    ]);
+            } catch (err) {
+                console.error('حدث خطأ في قاعدة البيانات:', err);
+            }
+
+            document.getElementById('quiz-questions-section').classList.add('hidden');
+            document.getElementById('quiz-loading-section').classList.add('hidden');
+            document.getElementById('quiz-result-section').classList.remove('hidden');
+
+            document.getElementById('result-student-name').textContent = studentName;
+            document.getElementById('final-prize-money').textContent = currentEarnedMoney;
+
+            const wrongContainer = document.getElementById('wrong-answers-container');
+
+            if (isFullWin) {
+                document.getElementById('result-status-title').textContent = 'مبروك! لقد أجبت على جميع الأسئلة وحققت الجائزة الكبرى!';
+                wrongContainer.innerHTML = `
+                    <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl text-center text-emerald-800 font-extrabold text-lg shadow-sm">
+                        👑 تهانينا الحارة! لقد أصبحت مليونير المعرفة في مدرسة التسبيح!
+                    </div>
+                `;
+
+                audioIntro.currentTime = 0;
+                audioIntro.play().catch(e => console.log(e));
+
+                const emailMsg = `تهانينا! الطالب/ة: ${studentName}\nفاز بالجائزة الكبرى: 1,000,000 $\nفي مسابقة: ${examName}`;
+                sendEmailViaSupabase(studentName, emailMsg, `🏆 فوز بالمليون: ${studentName}`);
+
+            } else {
+                document.getElementById('result-status-title').textContent = 'للأسف إجابة خاطئة، انتهت المسابقة!';
+                
+                wrongContainer.innerHTML = `
+                    <div class="bg-rose-50 border-2 border-rose-300 p-6 rounded-2xl space-y-3 text-right shadow-md">
+                        <div class="flex items-center gap-2 text-rose-700 font-extrabold text-base">
+                            <i class="fa-solid fa-circle-xmark text-xl"></i>
+                            <span>السؤال الذي أخطأت فيه (سؤال رقم ${currentQuestionIndex + 1}):</span>
+                        </div>
+                        <p class="font-bold text-slate-800 text-base leading-relaxed">${failedQuestion.q}</p>
+                        <p class="text-rose-600 font-bold text-sm">إجابتك الخاطئة: ${selectedOption}</p>
+                        <p class="text-emerald-700 font-extrabold text-sm bg-emerald-100/70 p-3 rounded-xl border border-emerald-200">
+                            ✨ الإجابة الصحيحة هي: ${failedQuestion.correct}
+                        </p>
+                    </div>
+                `;
+
+                const emailMsg = `تقرير انتهاء المسابقة للطالب/ة: ${studentName}\nالمبلغ المحقق: ${currentEarnedMoney}\nفي مسابقة: ${examName}\n\nالسؤال الخاطئ (رقم ${currentQuestionIndex + 1}): ${failedQuestion.q}\n- إجابة الطالب الخاطئة: ${selectedOption}\n- الإجابة الصحيحة: ${failedQuestion.correct}`;
+                
+                sendEmailViaSupabase(studentName, emailMsg, `تقرير مسابقة المليون: ${studentName} (${currentEarnedMoney})`);
+            }
+        }
+
+        function resetQuiz() {
+            stopAllAudio();
+            document.getElementById('quiz-setup-section').classList.remove('hidden');
+            document.getElementById('quiz-result-section').classList.add('hidden');
+            document.getElementById('quiz-notice-section').classList.add('hidden');
+            document.getElementById('quiz-loading-section').classList.add('hidden');
+            document.getElementById('quiz-student-name').value = '';
+            updateLessons();
+        }
+    </script>
+</body>
+</html>
