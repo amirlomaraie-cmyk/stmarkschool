@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة التحدي والسرعة - مدرسة التسبيح</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coptic: {
+                            gold: '#D4AF37',
+                            darkGold: '#AA7C11',
+                            navy: '#0F172A',
+                            burgundy: '#800020',
+                            cream: '#FBF9F5'
+                        }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #0F172A; 
+            text-align: center; 
+            color: white;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .coptic-pattern {
+            background-color: #0F172A;
+            background-image: radial-gradient(rgba(212, 175, 55, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .fade-word {
+            opacity: 0;
+            transform: translateY(10px);
+            display: inline-block;
+            animation: fadeInWord 0.4s forwards;
+        }
+        @keyframes fadeInWord {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="coptic-pattern min-h-screen flex flex-col justify-between font-cairo antialiased" onload="initRulesAnimation()" oncontextmenu="return false;">
+
+    <!-- عنصر الصوت الخلفي للمسابقة (Supabase Audio) -->
+    <audio id="bg-audio" src="https://lbsesqswjizxhtimuzan.supabase.co/storage/v1/object/public/chalenge/taranem%20elkenesa.mp3" loop preload="auto"></audio>
+
+    <!-- Navbar Header -->
+    <header class="bg-slate-900/90 text-white shadow-xl sticky top-0 z-50 border-b-2 border-coptic-gold backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" onclick="confirmExit(event)" class="flex items-center gap-2 text-coptic-gold font-bold hover:underline text-sm md:text-base">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>العودة للرئيسية</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-trophy text-coptic-gold text-xl"></i>
+                <h1 class="text-lg md:text-xl font-extrabold">مسابقة التحدي والسرعة</h1>
+            </div>
+            <div class="text-xs bg-coptic-gold/20 text-coptic-gold border border-coptic-gold px-3 py-1 rounded-full font-bold hidden sm:block">
+                جائزة 100 جنيهاً 🏆
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-3xl mx-auto px-4 py-8 w-full flex-grow flex flex-col justify-center items-center">
+        
+        <!-- STEP 1: RULES CARD -->
+        <div id="step-rules" class="w-full bg-slate-900/95 border-2 border-coptic-gold/60 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden backdrop-blur-md text-right space-y-6">
+            <div class="text-center pb-4 border-b border-coptic-gold/30">
+                <div class="w-16 h-16 bg-coptic-gold/20 text-coptic-gold rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl border border-coptic-gold/40 shadow-inner">
+                    <i class="fa-solid fa-stopwatch"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-coptic-gold mb-1">شروط وقواعد المسابقة</h2>
+                <p class="text-slate-300 text-xs md:text-sm">يرجى قراءة الشروط بدقة قبل البدء في التحدي</p>
+            </div>
+
+            <ul id="rules-list" class="space-y-4 bg-slate-800/80 p-5 rounded-2xl border border-slate-700 text-sm md:text-base leading-relaxed"></ul>
+
+            <button id="start-btn" onclick="goToVerificationStep()" class="w-full bg-coptic-gold text-coptic-navy font-extrabold py-4 rounded-xl hover:bg-amber-400 transition shadow-lg text-lg flex items-center justify-center gap-3 border border-amber-300">
+                <span>المتابعة وإدخال كود الطالب</span>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+
+        <!-- STEP 2: STUDENT CODE & SUBJECT/QUIZ SELECTION -->
+        <div id="step-verify" class="w-full bg-slate-900/95 border-2 border-coptic-gold/60 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden backdrop-blur-md text-right space-y-6 hidden">
+            <div class="text-center pb-4 border-b border-coptic-gold/30">
+                <div class="w-14 h-14 bg-coptic-gold/20 text-coptic-gold rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl border border-coptic-gold/40">
+                    <i class="fa-solid fa-id-card"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-coptic-gold">التحقق من كود الطالب</h3>
+                <p class="text-slate-300 text-xs md:text-sm">أدخل كود الطالب للتعرف على بياناتك واختيار المادة والمسابقة</p>
+            </div>
+
+            <div class="space-y-3">
+                <label class="block font-bold text-amber-200 text-sm">كود الطالب الدراسي:</label>
+                <div class="relative">
+                    <input type="text" id="student-code" oninput="verifyStudentCode()" placeholder="أدخل كود الطالب هنا..." maxlength="10" dir="ltr" class="w-full p-4 bg-slate-800 text-amber-300 font-extrabold text-center text-xl tracking-wider border-2 border-slate-600 rounded-2xl focus:outline-none focus:border-coptic-gold transition placeholder:text-slate-500">
+                    <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                </div>
+            </div>
+
+            <div id="student-data-card" class="hidden bg-slate-800/90 border border-coptic-gold/40 rounded-2xl p-5 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                    <span class="text-xs text-slate-400">اسم الطالب:</span>
+                    <span id="st-name" class="font-extrabold text-amber-300 text-base md:text-lg"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs md:text-sm">
+                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700">
+                        <span class="text-slate-400 block text-[11px]">المستوى:</span>
+                        <span id="st-level" class="font-bold text-white"></span>
+                    </div>
+                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700">
+                        <span class="text-slate-400 block text-[11px]">الصف الدراسي:</span>
+                        <span id="st-class" class="font-bold text-white"></span>
+                    </div>
+                </div>
+
+                <!-- زر فك الحجز السري للمشرف -->
+                <div id="admin-unlock-container" class="hidden pt-3 border-t border-slate-700 text-center">
+                    <button onclick="unlockStudentQuiz()" class="w-full bg-rose-600 text-white font-extrabold py-3 rounded-xl hover:bg-rose-700 transition text-xs shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                        <span>فك حجز المسابقة وإعادة المحاولة للطالب</span>
+                    </button>
+                </div>
+
+                <!-- القائمة الأولى: اسم المادة -->
+                <div class="pt-3 border-t border-slate-700 space-y-2">
+                    <label class="block font-bold text-amber-200 text-xs">اختر اسم المادة:</label>
+                    <select id="available-subjects" onchange="updateQuizList()" class="w-full p-3 bg-slate-900 text-white font-semibold border border-coptic-gold/50 rounded-xl focus:outline-none text-sm">
+                        <option value="bible">الكتاب المُقدَّس</option>
+                        <option value="liturgy">الطَّقس الكنسي</option>
+                    </select>
+                </div>
+
+                <!-- القائمة الثانية: اسم المسابقة -->
+                <div class="space-y-2">
+                    <label class="block font-bold text-amber-200 text-xs">اختر اسم المسابقة:</label>
+                    <select id="available-quizzes" class="w-full p-3 bg-slate-900 text-white font-semibold border border-coptic-gold/50 rounded-xl focus:outline-none text-sm">
+                    </select>
+                </div>
+            </div>
+
+            <div id="alert-message" class="hidden p-4 rounded-2xl text-center text-sm font-bold leading-relaxed"></div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="backToRules()" class="w-1/3 bg-slate-800 text-slate-300 font-bold py-3.5 rounded-xl hover:bg-slate-700 transition text-sm">تراجع</button>
+                <button id="start-quiz-btn" onclick="startQuizNow()" disabled class="w-2/3 bg-slate-700 text-slate-500 font-extrabold py-3.5 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2 cursor-not-allowed">
+                    <i class="fa-solid fa-play"></i>
+                    <span>بدء المسابقة الآن</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: ACTIVE QUIZ INTERFACE WITH CIRCULAR TIMER -->
+        <div id="step-active-quiz" class="w-full bg-slate-900/95 border-2 border-coptic-gold/60 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden backdrop-blur-md text-right space-y-6 hidden">
+            <div class="flex flex-col md:flex-row justify-between items-center border-b border-coptic-gold/30 pb-4 gap-4">
+                <div>
+                    <h3 id="quiz-title-display" class="text-xl font-extrabold text-coptic-gold"></h3>
+                    <p class="text-slate-300 text-xs mt-1">الطالب: <span id="active-student-name" class="text-amber-300 font-bold"></span></p>
+                </div>
+                <div class="relative w-20 h-20 flex items-center justify-center bg-slate-800 border-2 border-coptic-gold rounded-full shadow-inner">
+                    <div class="text-center">
+                        <span id="timer-display" class="text-base font-extrabold text-amber-300 font-mono">05:00</span>
+                        <span class="block text-[9px] text-slate-400">متبقي</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 space-y-4">
+                <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-700 pb-2">
+                    <span>السؤال رقم (<span id="current-q-num">1</span> من <span id="total-q-num">20</span>)</span>
+                    <span class="text-coptic-gold font-bold">تحدي السرعة</span>
+                </div>
+                <div id="question-text" class="text-lg font-bold text-white leading-relaxed"></div>
+                <div id="options-container" class="space-y-3 pt-2"></div>
+            </div>
+
+            <!-- أزرار التنقل (السؤال السابق والسؤال التالي) -->
+            <div class="flex gap-3">
+                <button id="prev-btn" onclick="prevQuestion()" class="w-1/3 bg-slate-800 text-amber-200 font-bold py-3.5 rounded-xl hover:bg-slate-700 transition text-sm border border-coptic-gold/30 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>السؤال السابق</span>
+                </button>
+                <button onclick="nextQuestion()" class="w-2/3 bg-coptic-gold text-coptic-navy font-extrabold py-3.5 rounded-xl hover:bg-amber-400 transition text-sm shadow-md flex items-center justify-center gap-2">
+                    <span>السؤال التالي / إنهاء</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 4: RESULT SCREEN -->
+        <div id="step-result" class="w-full bg-slate-900/95 border-2 border-coptic-gold/60 rounded-3xl p-8 shadow-2xl text-center space-y-6 hidden">
+            <div class="w-20 h-20 bg-coptic-gold/20 text-coptic-gold rounded-full flex items-center justify-center mx-auto text-4xl border border-coptic-gold/40">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <h3 class="text-3xl font-extrabold text-coptic-gold">انتهت المسابقة بنجاح!</h3>
+            
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4 max-w-md mx-auto text-right">
+                <div class="space-y-2 border-b border-slate-700 pb-3 text-xs md:text-sm">
+                    <p class="text-slate-300">كود الطالب: <span id="res-code" class="text-amber-300 font-bold font-mono"></span></p>
+                    <p class="text-slate-300">اسم الطالب: <span id="res-name" class="text-amber-300 font-bold"></span></p>
+                    <p class="text-slate-300">المستوى: <span id="res-level" class="text-white font-bold"></span></p>
+                    <p class="text-slate-300">الصف الدراسي: <span id="res-class" class="text-white font-bold"></span></p>
+                </div>
+
+                <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700 text-center">
+                    <p id="res-answered-text" class="text-base text-amber-200 font-bold">لقد قُمت بالإجابة علي 0 سؤال فقط</p>
+                </div>
+
+                <div class="flex justify-between items-center p-3 bg-slate-900/50 rounded-xl text-xs text-slate-300">
+                    <span>⏱️ الزمن المستغرق في الحل:</span>
+                    <span id="res-time-taken" class="text-emerald-400 font-extrabold text-sm font-mono">00:00</span>
+                </div>
+            </div>
+
+            <a href="index.html" class="inline-block bg-coptic-gold text-coptic-navy font-extrabold px-8 py-3.5 rounded-xl hover:bg-amber-400 transition text-sm shadow-lg">
+                العودة للرئيسية
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/80 text-slate-400 text-xs py-4 px-4 border-t border-slate-800 text-center">
+        مدرسة التسبيح - كنيسة الشهيد العظيم مارمرقس ببني صامت © 2026
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://lbsesqswjizxhtimuzan.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_XdBm9Pdk2MFq8QCrWTXjqQ_Rel5TKDz';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function sendEmailViaSupabase(fromName, messageText, subjectTitle) {
+            try {
+                await supabaseClient.functions.invoke('send-email', {
+                    body: { from_name: fromName, message: messageText, subject: subjectTitle }
+                });
+            } catch (err) {
+                console.error('فشل إرسال البريد الإلكتروني:', err);
+            }
+        }
+
+        document.addEventListener('copy', (e) => { e.preventDefault(); alert("🚫 النسخ محظور تماماً!"); });
+        document.addEventListener('paste', (e) => { e.preventDefault(); });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && quizStarted) {
+                alert("⚠️ تحذير خطير: محاولة مغادرة صفحة المسابقة أو تبديل التبويب ستؤدي إلى إنهاء المحاولة وإغلاقها فوراً!");
+                finishQuizDueToLeaving();
+            }
+        });
+
+        function confirmExit(event) {
+            if (quizStarted) {
+                const leaveConfirmed = confirm("⚠️ تحذير هام:\nأنت في منتصف المسابقة حالياً! هل أنت متأكد من رغبتك في مغادرة المسابقة وفقدان محاولتك؟\n\nاضغط «موافق» للخروج، أو «إلغاء» للاستكمال.");
+                if (!leaveConfirmed) {
+                    event.preventDefault();
+                } else {
+                    quizStarted = false;
+                    stopAudio();
+                }
+            }
+        }
+
+        function playBackgroundAudio() {
+            const audio = document.getElementById('bg-audio');
+            audio.volume = 0.5; 
+            audio.play().catch(error => {
+                console.log("التشغيل التلقائي يتطلب تفاعل المستخدم:", error);
+            });
+        }
+
+        function stopAudio() {
+            const audio = document.getElementById('bg-audio');
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        const rulesTextArray = [
+            "⏱️ تبدأ المسابقة ومؤقت الوقت المباشر (5 دقائق) فور الضغط على زر «بدء المسابقة الآن».",
+            "📅 تتاح المسابقة في الفترة من السبت 31-10-2026م وحتى الخميس 05-11-2026م.",
+            "👤 يحق لكل طالب تسجيل محاولة اختبارية واحدة فقط باستخدام كود الطالب المخصص.",
+            "🔄 متاح الانتقال بين الأسئلة (السابق / التالي) للمراجعة، بشرط اختيار إجابة لكل سؤال قبل المتابعة.",
+            "⚠️ تحذير: مغادرة الصفحة أو تبديل التبويب أثناء المسابقة يعتبر انسحاباً وإلغاءً نهائياً للمحاولة.",
+            "🏆 الفائز بالمركز الأول والجائزة المالية (100 جنيهاً) هو الطالب الأكثر إجابةً في أقل زمن.",
+            "🔒 الصفحة مؤمنة تماماً ضد النسخ والتصوير لضمان تكافؤ الفرص."
+        ];
+
+        const studentsDatabase = {
+            '2601': { name: 'مارفي بيشوي محروس', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2602': { name: 'أبانوب حنا عازر', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2603': { name: 'أناسيمون صموئيل فرج', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2604': { name: 'مريم عماد سمير', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2605': { name: 'كاراس حنا عزت', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2606': { name: 'يؤانا أمير شحاته', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2607': { name: 'نوفير أبانوب محروس', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2608': { name: 'كيفن رضا عزيز', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2609': { name: 'كيرلس أشرف سمير', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2610': { name: 'أربسيما ملاك ثابت', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2611': { name: 'ديفيد جورج راجي', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2612': { name: 'بيري عيد رشدي', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2613': { name: 'أبرام بولا جرجس', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2614': { name: 'ملاك عبد الشهيد ملاك', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2615': { name: 'مريم هاني أمجد', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2616': { name: 'إسحق سامح نادي', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2617': { name: 'كيرلس شحاته عياد', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2618': { name: 'نوفير يوسف فرج', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2619': { name: 'يوسف كيرلس شعبان', level: 'المستوى الأول', class: 'الأول الإبتدائي' },
+            '2501': { name: 'مكاري مينا حنس', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2505': { name: 'إبراهيم مينا نادي', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2506': { name: 'أوناي أبانوب إسحق', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2509': { name: 'مريم بيشوي صدقي', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2511': { name: 'بيشوي جيد حنا', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2512': { name: 'ماروسكا جرجس ثابت', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2513': { name: 'شنوده كيرلس مكرم', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2514': { name: 'مهرائيل مينا سمير', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2515': { name: 'داود مدحت صلاح', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2516': { name: 'يسطس مرقس ناجح', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2517': { name: 'بيشوي روماني ملاك', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2518': { name: 'جورج مرقس لمعي', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2519': { name: 'دانيال مرقس نبيل', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2521': { name: 'صموئيل غطاس صليب', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2523': { name: 'ماريلا إبراهيم يوسف', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2524': { name: 'توماس عازر خليل', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2622': { name: 'مارسلينو رامي ثابت', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2531': { name: 'مريم مينا مرقس', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2623': { name: 'ميرا عبد المسيح مرعي', level: 'المستوى الأول', class: 'الثاني الإبتدائي' },
+            '2401': { name: 'بارثينيا بيشوي محروس', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2402': { name: 'إسحاق عبد المسيح إسحاق', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2403': { name: 'يوسف سامح نبيل', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2404': { name: 'مارسلينو أنطونيوس إبراهيم', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2405': { name: 'بيشوي أمير عادل', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2406': { name: 'مريم صموئيل فرج', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2407': { name: 'إيريني حنا عازر', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2409': { name: 'ساويرس بيشوي صدقي', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2410': { name: 'فلتاؤس شنوده وليم', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2411': { name: 'كيرمينا شحاته عياد', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2412': { name: 'فيلومينا سامح بولس', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2413': { name: 'جيسيكا أبانوب نادي', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2414': { name: 'مريم مايكل ميشيل', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2415': { name: 'روماني فانوس مرقس', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2416': { name: 'جونير وجيه باسيليوس', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2417': { name: 'مارينا رضا رشدي', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2418': { name: 'مريم رضا صلاح', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2419': { name: 'جيسيكا كيرلس شعبان', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2420': { name: 'مادلين أمير عزت', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2421': { name: 'بيشوي غطاس عازر', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2423': { name: 'ببنوده أشرف مسعد', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2424': { name: 'يؤانا جرجس ثابت', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2428': { name: 'بيشوي مينا كمال', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2434': { name: 'شنوده باسم نادي', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2439': { name: 'ميرولا كيرلس واصف', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '2526': { name: 'يؤانا جورج راجي', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2528': { name: 'ميرا مينا صفوت', level: 'المستوى الثاني', class: 'الثالث الإبتدائي' },
+            '2101': { name: 'مارينا مينا سمير', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2102': { name: 'كاراس هاني صلاح', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2103': { name: 'مريم مدحت صلاح', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2104': { name: 'أبانوب مينا مكرم', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2106': { name: 'كيرمينا يوسف إسحاق', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2110': { name: 'أدم سامح نبيل', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2111': { name: 'يوسف مرقس ملاك', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2112': { name: 'ميرنا عبد المسيح مرعي', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2113': { name: 'إيليا مينا مرقس', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2114': { name: 'مارفي مرقس جميل', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2119': { name: 'جوي مايكل ميشيل', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2120': { name: 'بيشوي أمير ملاك', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2122': { name: 'مريم كيرلس مكرم', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2123': { name: 'رانيا فيليب بولس', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2124': { name: 'بيشوي صموئيل طلعت', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2127': { name: 'مريم عبد المسيح إسحق', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2128': { name: 'يؤانا صموئيل سمير', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2131': { name: 'موسي جرجس ملاك', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2132': { name: 'إسحاق أمير يونان', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2133': { name: 'يؤانا ميخائيل زكريا', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2134': { name: 'مريم أبانوب صبحي', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2135': { name: 'مارلي أمير عزت', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2137': { name: 'ساره إبراهيم جرجس', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2140': { name: 'مريم كامل حنس', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2141': { name: 'ابانوب أمير عزت', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2143': { name: 'ماري مينا صبحي', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2144': { name: 'شنوده أبانوب صبحي', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2145': { name: 'جورج أبانوب محروس', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2146': { name: 'مارفل أمجد إسحق', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2147': { name: 'إيريني حنا نجيب', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2148': { name: 'بارثينيا أنطونيوس إبراهيم', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2151': { name: 'إيلاريا صموئيل فرج', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2152': { name: 'ترنيم شنوده وليم', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2153': { name: 'نيفان أبانوب نادي', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2154': { name: 'جرجس إبراهيم جرجس', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2156': { name: 'شنودة محروس صديق', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2158': { name: 'يوسف أمير هاني', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2160': { name: 'أنستاسيا ملاك ثابت', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2161': { name: 'كارن مرقس ملاك', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2162': { name: 'مريم ميلاد نادي', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2163': { name: 'جونير مرقس لمعي', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2164': { name: 'بولا مينا بطرس', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2165': { name: 'مارلي حليم ملاك', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2166': { name: 'ماري مدحت ناجح', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2168': { name: 'كيرلس أمير ميلاد', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2169': { name: 'كارن يوسف إسحق', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2172': { name: 'شنودة مرقس عيد', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2174': { name: 'مرقس ملاك مرقس', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2178': { name: 'مريم مينا صفوت', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2180': { name: 'إيلاريا مينا سمير', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2187': { name: 'مهرائيل مجدي ميلاد', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2190': { name: 'سيمون سامح بولس', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2193': { name: 'يوستينا رضا محروس', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2194': { name: 'جورج عبد المسيح عيد', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2195': { name: 'يوستينا سامح ميلاد', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2196': { name: 'ماريز حزين صليب', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2199': { name: 'ميخائيل ملاك لطفي', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2202': { name: 'جوي سامح نادي', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2203': { name: 'كارن مراد حنا', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2205': { name: 'شنودة مرقس نادي', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2206': { name: 'ماري مينا حنس', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2210': { name: 'يوستينا مدحت ملاك', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2211': { name: 'دميانة ميلاد محروس', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2216': { name: 'كارن روماني عيد', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2218': { name: 'مارينا حنا شحاته', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2219': { name: 'حبيبة رأفت سمير', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2224': { name: 'شنودة أنطون عزت', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2225': { name: 'كيرلس وجيه شارود', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2236': { name: 'مريم عيد ثابت', level: 'المستوى الثالث', class: 'الخامس الإبتدائي' },
+            '2301': { name: 'نورفانا معوض مصباح', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2303': { name: 'عماد عبد المسيح عيد', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2304': { name: 'حبيب محروس صديق', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2305': { name: 'مارينا عماد خليل', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2306': { name: 'إيريني رضا محروس', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2307': { name: 'مارفل ميلاد نادي', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2309': { name: 'إيريني عزت باسيليوس', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2310': { name: 'مريم أسامة إسحق', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2311': { name: 'مريم ميخائيل شحاته', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2312': { name: 'فيرونيكا روماني ملاك', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2313': { name: 'بتول مينا ميخائيل', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2314': { name: 'إيريني مينا صبحي', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2315': { name: 'جورج كيرلس سمير', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2316': { name: 'ميرنا عبد الشهيد متي', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2317': { name: 'مينا مرقس عيد', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2318': { name: 'بيشوي سامح ميلاد', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2319': { name: 'سارة سامح بولس', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2320': { name: 'إيلاريا ملاك ثابت', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2322': { name: 'فيلومينا مدحت ملاك', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2324': { name: 'ساندي مجدي ميلاد', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2325': { name: 'إبراهيم حزين صليب', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2326': { name: 'مينا إبراهيم يوسف', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2327': { name: 'كارن مجدي يوسف', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2328': { name: 'مينريت مرقس طلعت', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2335': { name: 'شنوده جرجس إسكاروس', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '2336': { name: 'توماس مرقس طلعت', level: 'المستوى الرابع', class: 'الأول الإعدادي' },
+            '2340': { name: 'بيشوي مينا عزت', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '2620': { name: 'بيشوي أمير ميلاد رشدي', level: 'المستوى الثاني', class: 'الرابع الإبتدائي' },
+            '2621': { name: 'بولا بهجت عيد', level: 'المستوى الثالث', class: 'السادس الإبتدائي' },
+            '21100': { name: 'مريم رضا حنا', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '21105': { name: 'مريم عبد الشهيد ملاك', level: 'المستوى الرابع', class: 'الثاني الإعدادي' },
+            '21108': { name: 'إيلاريا مينا مكرم', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21113': { name: 'جومانا ملاك مرقس', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21115': { name: 'كاراس عبد الشهيد سمير', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21124': { name: 'جوزيف مينا بطرس', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21125': { name: 'انطون امير ملاك', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21130': { name: 'ابانوب مرقس نادي', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21131': { name: 'ماري جرجس ملاك', level: 'المستوى الخامس', class: 'الثالث الإعدادي' },
+            '21132': { name: 'سالي مجدي يوسف', level: 'المستوى الخامس', class: 'الثالث الإعدادي' }
+        };
+
+        const grade4RuthQuestions = [
+            { q: 'من هي الشخصية التي يخبرنا الكتاب المقدس أن يسوع المسيح كان من نسلها؟', options: ['حنة', 'راعوث', 'مريم', 'إِصابات'], correct: 1 },
+            { q: 'ما هي الجنسية التي كانت تنتمي إليها راعوث قبل إيمانها بإله إسرائيل؟', options: ['مصرية', 'موابية', 'بابلية', 'يونانية'], correct: 1 },
+            { q: 'ماذا تعني كلمة "المجاعة" كما جاءت في بداية القصة؟', options: ['كثرة الأمطار والخيرات', 'عدم نمو الثمار والحبوب وموت الحيوانات جوعاً', 'بناء مدن جديدة', 'السفر إلى بلاد بعيدة'], correct: 1 },
+            { q: 'لماذا ترك أليمالك مدينة بيت لحم مع عائلته؟', options: ['للبحث عن العمل والتجارة', 'للبحث عن الطعام بسبب المجاعة', 'لزيارة أصدقائه', 'لبناء بيت جديد'], correct: 1 },
+            { q: 'ماذا حدث لأليمالك وابنيه بعد انتقالهم إلى أرض موآب؟', options: ['أصبحوا أغنياء جداً', 'سافروا إلى بلاد أخرى', 'مات أليمالك وتبعه ابناه', 'عادوا فوراً إلى بيت لحم'], correct: 2 },
+            { q: 'ما هما اسما زوجتي ابني نعمى اللتين بقيتا أرملتين معها؟', options: ['مريم ومارثا', 'راعوث وعرفة', 'سارة ورفقة', 'حنة وأبوية'], correct: 1 },
+            { q: 'ماذا فعلت "عرفة" عندما طلبت منهما نعمى البقاء في موآب؟', options: ['ذهبت مع نعمى إلى بيت لحم', 'عادت إلى أهلها', 'بنيت بيتاً وحدها', 'سافرت إلى مصر'], correct: 1 },
+            { q: 'كيف عبرت "راعوث" عن تمسكها بحماتها نعمى؟', options: ['تركتها وذهبت مع عرفة', 'رفضت مفارقتها وعدت ألا تتركها أبداً', 'طلبت منها المال', 'تشاجرت معها'], correct: 1 },
+            { q: 'ماذا طلبت نعمى من أصدقائها في بيت لحم أن يطلقوا عليها بدلاً من "نعمي"؟', options: ['فرح', 'مرة', 'أميرة', 'سعادة'], correct: 1 },
+            { q: 'إله من أصبحت راعوث تعبد بعد أن تركت عبادة الأصنام؟', options: ['إله إسرائيل الحي', 'آلهة موآب', 'أصنام الحقل', 'شمس المشرق'], correct: 0 },
+            { q: 'ماذا كانت تعمل راعوث كل يوم في الحقل لتجد طعاماً لها ولنعمى؟', options: ['تزرع القمح بنفسها', 'تلتقط الشعير المتبقي وراء الحصادين', 'تحرس الغنم', 'تسقي الأشجار'], correct: 1 },
+            { q: 'ما اسم صاحب الحقل الطيب الذي ساعد راعوث وأمر الحصادين بترك حبوب لها؟', options: ['أليمالك', 'عوبيد', 'بوعز', 'يسى'], correct: 2 },
+            { q: 'ما هي صلة القرابة بين بوعز ونعمى؟', options: ['هو ابنها الوحيد', 'هو أخوها', 'هو من أقاربها المقربين', 'هو أبوها'], correct: 2 },
+            { q: 'ماذا كان يفعل الناس في تلك الأيام لتثبيت الاتفاق بدل التصافح باليد؟', options: ['يخلع الرجل نعله ويعطيه للشخص الآخر', 'يتبادلان الهدايا', 'يكتبان عقداً ورقياً', 'يذهبان إلى المعبد'], correct: 0 },
+            { q: 'ما اسم الابن الذي ولدته راعوث لـ بوعز وصار جزءاً من العائلة؟', options: ['صموئيل', 'عوبيد', 'داود', 'شاول'], correct: 1 },
+            { q: 'من هو الملك العظيم الذي يعتبر "عوبيد" جداً له؟', options: ['الملك سليمان', 'الملك شاول', 'الملك داود', 'الملك حزقيا'], correct: 2 },
+            { q: 'في أي سفر من أسفار الكتاب المقدس نجد قصة راعوث؟', options: ['سفر التكوين', 'سفر الخروج', 'سفر راعوث', 'سفر المزامير'], correct: 2 },
+            { q: 'ما هي الآية الشاهدية الجميلة المذكورة في نهاية قصة راعوث؟', options: ['"فتح كلامك ينير العقل"', '"الرب راعي فلا يعوزني شيء"', '"تحب الرب إلهك"', '"اسألوا تعطوا"'], correct: 0 },
+            { q: 'من أي بلد جاءت كل من راعوث وعرفة زوجتا ابني نعمى؟', options: ['مصر', 'موآب', 'أورشليم', 'أريحا'], correct: 1 },
+            { q: 'لماذا فرحت نعمى وأصدقاؤها في النهاية بانضمام راعوث لعائلتهم؟', options: ['لأنها كانت ربت بيتاً كبيراً', 'لأنها تركت عبادة الأصنام وأصبحت من أجداد السيد المسيح وداود الملك', 'لأنها جابت معها أموالاً كثيرة', 'لأنها سافرت إلى بلاد بعيدة'], correct: 1 }
+        ];
+
+        let currentValidatedStudent = null;
+        let targetPureCode = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let studentAnswers = {};
+        let timerInterval = null;
+        let timeLeft = 300;
+        let totalQuizTime = 300;
+        let quizStarted = false;
+
+        function isQuizPeriodActive() {
+            const now = new Date();
+            const startDate = new Date('2026-10-31T00:00:00');
+            const endDate = new Date('2026-11-05T23:59:59');
+            return now >= startDate && now <= endDate;
+        }
+
+        function initRulesAnimation() {
+            const container = document.getElementById('rules-list');
+            container.innerHTML = '';
+            let wordDelay = 0;
+            rulesTextArray.forEach((ruleText) => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start gap-2 text-slate-200';
+                const textSpan = document.createElement('span');
+                textSpan.className = 'flex flex-wrap gap-x-1.5';
+                ruleText.split(' ').forEach((word) => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'fade-word';
+                    wordSpan.style.animationDelay = `${wordDelay * 0.05}s`;
+                    wordSpan.textContent = word;
+                    textSpan.appendChild(wordSpan);
+                    wordDelay++;
+                });
+                li.appendChild(textSpan);
+                container.appendChild(li);
+            });
+        }
+
+        function goToVerificationStep() {
+            playBackgroundAudio();
+            document.getElementById('step-rules').classList.add('hidden');
+            document.getElementById('step-verify').classList.remove('hidden');
+        }
+
+        function backToRules() {
+            document.getElementById('step-verify').classList.add('hidden');
+            document.getElementById('step-rules').classList.remove('hidden');
+        }
+
+        async function verifyStudentCode() {
+            let codeInput = document.getElementById('student-code').value.trim();
+            const dataCard = document.getElementById('student-data-card');
+            const alertMsg = document.getElementById('alert-message');
+            const startBtn = document.getElementById('start-quiz-btn');
+            const adminUnlockBox = document.getElementById('admin-unlock-container');
+
+            dataCard.classList.add('hidden');
+            alertMsg.classList.add('hidden');
+            adminUnlockBox.classList.add('hidden');
+            startBtn.disabled = true;
+            startBtn.className = "w-2/3 bg-slate-700 text-slate-500 font-extrabold py-3.5 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2 cursor-not-allowed";
+            currentValidatedStudent = null;
+            targetPureCode = null;
+
+            if (!codeInput) return;
+
+            if (!isQuizPeriodActive()) {
+                showAlert("⏳ الموعد المحدد للمسابقة قد انتهى أو لم يبدأ بعد! المسابقة متاحة من 31-10-2026 وحتى 05-11-2026 فقط.", "bg-rose-900/80 text-rose-200 border border-rose-700");
+                return;
+            }
+
+            let isAdminMode = false;
+            if (codeInput.endsWith('a') || codeInput.endsWith('A')) {
+                isAdminMode = true;
+            }
+            targetPureCode = codeInput.replace(/a|A/g, '');
+
+            const student = studentsDatabase[targetPureCode];
+            if (!student) {
+                showAlert("⚠️ كود الطالب غير صحيح أو غير مسجل بالنظام!", "bg-rose-900/80 text-rose-200 border border-rose-700");
+                return;
+            }
+
+            // التحقق من قاعدة البيانات مباشرة لمعرفة ما إذا كان الطالب قد امتحن من قبل
+            try {
+                const { data, error } = await supabaseClient
+                    .from('challenge')
+                    .select('student_code')
+                    .eq('student_code', targetPureCode);
+
+                if (data && data.length > 0 && !isAdminMode) {
+                    showAlert("🚫 عفواً، لقد قمت بإجراء هذه المسابقة مسبقاً ومسجلة بالنظام! يُسمح بمحاولة واحدة فقط لكل طالب.", "bg-amber-900/80 text-amber-200 border border-amber-700");
+                    return;
+                }
+
+                if (data && data.length > 0 && isAdminMode) {
+                    showAlert("🔓 [وضع المشرف]: هذا الطالب اجتاز المسابقة مسبقاً، يمكنك استخدام زر فك الحجز أعلاه لإتاحة إعادة المحاولة.", "bg-sky-900/80 text-sky-200 border border-sky-700");
+                    adminUnlockBox.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("خطأ في التحقق من قاعدة البيانات:", err);
+            }
+
+            document.getElementById('st-name').textContent = student.name;
+            document.getElementById('st-level').textContent = student.level;
+            document.getElementById('st-class').textContent = student.class;
+            dataCard.classList.remove('hidden');
+
+            currentValidatedStudent = { code: targetPureCode, ...student };
+            updateQuizList();
+
+            startBtn.disabled = false;
+            startBtn.className = "w-2/3 bg-coptic-gold text-coptic-navy font-extrabold py-3.5 rounded-xl hover:bg-amber-400 transition text-sm shadow-lg flex items-center justify-center gap-2 border border-amber-300 cursor-pointer";
+        }
+
+        function updateQuizList() {
+            const subjectSelect = document.getElementById('available-subjects').value;
+            const quizSelect = document.getElementById('available-quizzes');
+            
+            quizSelect.innerHTML = '';
+
+            if (currentValidatedStudent && currentValidatedStudent.class === 'الرابع الإبتدائي' && subjectSelect === 'bible') {
+                quizSelect.innerHTML = `<option value="ruth">درس راعوث: قصة حب (الصف الرابع الإبتدائي)</option>`;
+                quizSelect.disabled = false;
+            } else {
+                quizSelect.innerHTML = `<option value="">-- عذراً، لا توجد مسابقة متاحة لهذه المادة --</option>`;
+                quizSelect.disabled = true;
+            }
+        }
+
+        async function unlockStudentQuiz() {
+            if (!targetPureCode) return;
+            try {
+                const { error } = await supabaseClient
+                    .from('challenge')
+                    .delete()
+                    .eq('student_code', targetPureCode);
+
+                if (error) {
+                    alert("حدث خطأ أثناء محاولة إزالة المحاولة السابقة.");
+                    return;
+                }
+
+                alert(`✅ تم بنجاح حذف المحاولة السابقة للطالب: ${studentsDatabase[targetPureCode].name}. يمكنه الآن دخول المسابقة مرة أخرى.`);
+                verifyStudentCode();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function showAlert(msg, alertClass) {
+            const alertMsg = document.getElementById('alert-message');
+            alertMsg.className = `p-4 rounded-2xl text-center text-sm font-bold leading-relaxed ${alertClass}`;
+            alertMsg.textContent = msg;
+            alertMsg.classList.remove('hidden');
+        }
+
+        async function startQuizNow() {
+            if (!isQuizPeriodActive()) {
+                alert("⏳ عذراً، المسابقة مغلقة حالياً.");
+                return;
+            }
+
+            if (!currentValidatedStudent) return;
+
+            // التحقق النهائي من قاعدة البيانات قبل البدء لمنع أي محاولة تجاوز متزامنة
+            try {
+                const { data } = await supabaseClient
+                    .from('challenge')
+                    .select('student_code')
+                    .eq('student_code', currentValidatedStudent.code);
+
+                if (data && data.length > 0) {
+                    alert("🚫 عذراً، تم تسجيل محاولة سابقة لهذا الكود في النظام بالفعل.");
+                    window.location.reload();
+                    return;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+
+            const selectedSubject = document.getElementById('available-subjects').value;
+            const selectedQuiz = document.getElementById('available-quizzes').value;
+
+            if (currentValidatedStudent.class === 'الرابع الإبتدائي' && selectedSubject === 'bible' && selectedQuiz === 'ruth') {
+                currentQuestions = JSON.parse(JSON.stringify(grade4RuthQuestions));
+            } else {
+                alert("⚠️ عذراً، هذه المسابقة غير متوفرة حالياً لهذه المادة أو هذا الصف الدراسي. لا يمكنك دخول المسابقة.");
+                return;
+            }
+
+            currentQuestions.sort(() => Math.random() - 0.5);
+
+            quizStarted = true;
+
+            currentQuestionIndex = 0;
+            studentAnswers = {};
+
+            document.getElementById('step-verify').classList.add('hidden');
+            document.getElementById('step-active-quiz').classList.remove('hidden');
+
+            document.getElementById('active-student-name').textContent = currentValidatedStudent.name;
+            document.getElementById('quiz-title-display').textContent = `مسابقة راعوث: قصة حب (الكتاب المقدس)`;
+            document.getElementById('total-q-num').textContent = currentQuestions.length;
+
+            startCircularTimer();
+            displayCurrentQuestion();
+        }
+
+        function startCircularTimer() {
+            timeLeft = 300;
+            totalQuizTime = 300;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer-display').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function displayCurrentQuestion() {
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+            const qObj = currentQuestions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = qObj.q;
+
+            const optionsContainer = document.getElementById('options-container');
+            const savedAnswer = studentAnswers[currentQuestionIndex];
+
+            optionsContainer.innerHTML = qObj.options.map((opt, idx) => `
+                <label class="flex items-center gap-3 p-3.5 bg-slate-900/70 border border-slate-700 rounded-xl cursor-pointer hover:border-coptic-gold transition">
+                    <input type="radio" name="quiz-option" value="${idx}" class="w-4 h-4 text-coptic-gold" ${savedAnswer === idx ? 'checked' : ''}>
+                    <span class="text-sm font-semibold">${opt}</span>
+                </label>
+            `).join('');
+
+            const prevBtn = document.getElementById('prev-btn');
+            if (currentQuestionIndex === 0) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            const selectedOpt = document.querySelector('input[name="quiz-option"]:checked');
+            
+            if (!selectedOpt) {
+                alert("⚠️ عذراً، لا يمكنك الانتقال للسؤال التالي قبل اختيار الإجابة على السؤال الحالي!");
+                return;
+            }
+
+            studentAnswers[currentQuestionIndex] = parseInt(selectedOpt.value, 10);
+
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            const selectedOpt = document.querySelector('input[name="quiz-option"]:checked');
+            if (selectedOpt) {
+                studentAnswers[currentQuestionIndex] = parseInt(selectedOpt.value, 10);
+            }
+
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayCurrentQuestion();
+            }
+        }
+
+        async function finishQuiz() {
+            if (timerInterval) clearInterval(timerInterval);
+            quizStarted = false;
+            stopAudio(); 
+
+            let answeredCount = 0;
+            let score = 0;
+            let wrongAnswersDetails = [];
+
+            currentQuestions.forEach((qObj, index) => {
+                const studentAnsIdx = studentAnswers[index];
+                if (studentAnsIdx !== undefined) {
+                    answeredCount++;
+                    if (studentAnsIdx === qObj.correct) {
+                        score++;
+                    } else {
+                        const wrongText = qObj.options[studentAnsIdx];
+                        const correctText = qObj.options[qObj.correct];
+                        wrongAnswersDetails.push(`• السؤال (${index + 1}): ${qObj.q}\n  - إجابة الطالب: ${wrongText}\n  - الإجابة الصحيحة: ${correctText}`);
+                    }
+                } else {
+                    wrongAnswersDetails.push(`• السؤال (${index + 1}): ${qObj.q}\n  - إجابة الطالب: لم يُجب\n  - الإجابة الصحيحة: ${qObj.options[qObj.correct]}`);
+                }
+            });
+
+            const timeSpentSeconds = totalQuizTime - timeLeft;
+            const spentMinutes = Math.floor(timeSpentSeconds / 60);
+            const spentSeconds = timeSpentSeconds % 60;
+            const formattedTimeSpent = `${spentMinutes}:${spentSeconds < 10 ? '0' : ''}${spentSeconds}`;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('challenge')
+                    .insert([
+                        { 
+                            student_code: currentValidatedStudent.code,
+                            student_name: currentValidatedStudent.name, 
+                            student_level: currentValidatedStudent.level,
+                            student_class: currentValidatedStudent.class,
+                            answered_questions: answeredCount,
+                            correct_answers: score, 
+                            wrong_answers: currentQuestions.length - score,
+                            total_questions: currentQuestions.length, 
+                            time_spent: formattedTimeSpent 
+                        }
+                    ]);
+
+                if (error) {
+                    console.error('خطأ Supabase في الحفظ:', error);
+                }
+            } catch (err) {
+                console.error('خطأ غير متوقع:', err);
+            }
+
+            let emailMsg = `تقرير مسابقة التحدي والسرعة:\n- اسم الطالب: ${currentValidatedStudent.name}\n- كود الطالب: ${currentValidatedStudent.code}\n- المستوى: ${currentValidatedStudent.level}\n- الصف: ${currentValidatedStudent.class}\n- الدرجة الصحيحة: ${score} من ${currentQuestions.length}\n- الزمن المستغرق: ${formattedTimeSpent}\n\n--- تفاصيل الأخطاء والإجابات الصحيحة ---\n`;
+            
+            if (wrongAnswersDetails.length > 0) {
+                emailMsg += wrongAnswersDetails.join('\n\n');
+            } else {
+                emailMsg += "أجاب الطالب على جميع الأسئلة بشكل صحيح تماماً! 🌟";
+            }
+
+            sendEmailViaSupabase(currentValidatedStudent.name, emailMsg, `🏆 تقرير تحدي السرعة: ${currentValidatedStudent.name} (${score}/${currentQuestions.length})`);
+
+            document.getElementById('step-active-quiz').classList.add('hidden');
+            document.getElementById('step-result').classList.remove('hidden');
+
+            document.getElementById('res-code').textContent = currentValidatedStudent.code;
+            document.getElementById('res-name').textContent = currentValidatedStudent.name;
+            document.getElementById('res-level').textContent = currentValidatedStudent.level;
+            document.getElementById('res-class').textContent = currentValidatedStudent.class;
+
+            document.getElementById('res-answered-text').textContent = `لقد قُمت بالإجابة علي ${answeredCount} سؤال من أصل ${currentQuestions.length}`;
+            document.getElementById('res-time-taken').textContent = formattedTimeSpent;
+        }
+
+        function finishQuizDueToLeaving() {
+            if (timerInterval) clearInterval(timerInterval);
+            quizStarted = false;
+            stopAudio();
+            alert("❌ تم إلغاء محاولتك نتيجة محاولة مغادرة صفحة المسابقة!");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
